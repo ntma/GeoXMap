@@ -8,8 +8,6 @@ Ext.define('GeoXMap.tools.components.GoToFormCtrl', {
     },
 
     onAccept: function(){
-        console.log(this)
-
         const coords = this.lookupReference('coordinates'),
             toEpsg = this.lookupReference('toepsg'),
             fromEpsg = this.lookupReference('fromepsg');

@@ -92,8 +92,7 @@ Ext.define('GeoXMap.tools.components.Search', {
             const fromEpsgCode = (this.fromEpsg) ? this.fromEpsg : map.getProjectionCode();
             const toEpsgCode = (this.toEpsg) ? this.toEpsg : map.getProjectionCode();
 
-            const position = map.transformCoordinates(coords, fromEpsgCode, toEpsgCode);
-
+            const position = map.transformCoordinates(coords.map(Number), fromEpsgCode, toEpsgCode);
             // const geoMarker = new ol.Feature({
             //     geometry: new ol.geom.Point(position)
             // });
