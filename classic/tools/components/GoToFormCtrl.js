@@ -4,7 +4,7 @@ Ext.define('GeoXMap.tools.components.GoToFormCtrl', {
     alias: 'controller.gotoform',
 
     onCancel: function(){
-        this.getView().hideWindow();
+        this.getView().hide();
     },
 
     onAccept: function(){
@@ -15,21 +15,30 @@ Ext.define('GeoXMap.tools.components.GoToFormCtrl', {
             fromEpsg = this.lookupReference('fromepsg');
 
         if(coords.validate() && fromEpsg.validate() && toEpsg.validate()){
-            // const position = ol.proj.transform(parsedCoords, 'EPSG:' + parsedIn, 'EPSG:' + parsedOut);
-
+            const view = this.getView();
             const parsedCoords = coords.getValue().match(/[+-]?\d+(?:\.\d+)?/g).map(Number),
                 parsedToEpsg = parseInt(toEpsg.getValue()),
                 parsedFromEpsg = parseInt(fromEpsg.getValue());
 
-            const map = this.getView().getMapScope().getMap();
+            const map = view.getMapScope().getMap();
 
-            const position = map.transformCoordinates(parsedCoords, parsedToEpsg, parsedFromEpsg);
+            const position = map.transformCoordinates(parsedCoords, parsedFromEpsg, parsedToEpsg);
 
             map.navigateToPoint(position);
 
-            this.getView().hideWindow();
+            view.hide();
         } else {
             // Do nothing
+        }
+    },
+
+    onShow: function(){
+        const map = this.getView().getMapScope().getMap();
+
+        const projectionCode = map.getProjectionCode();
+
+        if(projectionCode){
+            this.lookupReference('toepsg').setValue(projectionCode);
         }
     }
 });

@@ -1,5 +1,6 @@
 Ext.define('GeoXMap.tools.components.GoToForm', {
-    extend: 'Ext.panel.Panel',
+    // extend: 'Ext.panel.Panel',
+    extend: 'GeoXMap.tools.templates.ContextWindow',
 
     xtype: 'gotoform',
 
@@ -53,8 +54,6 @@ Ext.define('GeoXMap.tools.components.GoToForm', {
             // invalidText: 'Format: Lon,Lat | [Lon, Lat]',
             validateOnBlur: true,
             validator: function(val){
-                console.log(val)
-
                 const match = val.match(/[+-]?\d+(?:\.\d+)?/g);
 
                 if(match){
@@ -76,7 +75,7 @@ Ext.define('GeoXMap.tools.components.GoToForm', {
             items: [
                 {
                     xtype: 'textfield',
-                    reference: 'toepsg',
+                    reference: 'fromepsg',
                     emptyText: 'From EPSG',
 
                     validateOnBlur: true,
@@ -92,7 +91,7 @@ Ext.define('GeoXMap.tools.components.GoToForm', {
                 },
                 {
                     xtype: 'textfield',
-                    reference: 'fromepsg',
+                    reference: 'toepsg',
                     emptyText: 'To EPSG',
 
                     validateOnBlur: true,
@@ -102,5 +101,9 @@ Ext.define('GeoXMap.tools.components.GoToForm', {
                 }
             ]
         }
-    ]
+    ],
+
+    listeners: {
+        show: 'onShow'
+    }
 });

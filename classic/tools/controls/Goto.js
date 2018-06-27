@@ -13,7 +13,7 @@ Ext.define('GeoXMap.tools.controls.GoTo', {
 
         config.params['ctxtype'] = 'gotoform';
         config.params['position'] = 'anchor';
-        config.params['ctxfocus'] = 'true';
+        config.params['ctxfocus'] = true;
 
         this.callParent([config]);
     }

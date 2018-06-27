@@ -34,49 +34,14 @@ Ext.define('GeoXMap.tools.templates.CButton', {
         const mapscope = this.mapscope;
 
         const ctxtype = params.ctxtype ? params.ctxtype : 'panel';
+        const ctxfocus = params.ctxfocus;
+
         this.position = params.position;
 
-        this.ctxfocus = params.ctxfocus;
-
-        const ctxw = Ext.create('Ext.window.Window', {
-            header: false,
-            resizable: false,
-            bodyBorder: false,
-            border: false,
-
-            draggable: false,
-
-            userCls: 'mappanel',
-            // ui: me.ui.replace('tool', 'window'),
-
-            hidden: true,
-            hideMode: 'offsets',
-
-            layout: 'fit',
-
-            items: [
-                {
-                    xtype: ctxtype,
-
-                    getMapScope: function () {
-                        return mapscope;
-                    },
-
-                    hideWindow: function(){
-                        ctxw.hide();
-                    },
-
-                    showWindow: function(){
-                        ctxw.show();
-                    }
-                }
-            ]
-        });
-
-        ctxw.on('focusleave',function(){
-            if(me.ctxfocus){
-                ctxw.hide();
-            }
+        const ctxw = Ext.create({
+            xtype: ctxtype,
+            mapscope: mapscope,
+            ctxfocus: ctxfocus
         });
 
         mapscope.on('resize', function () {
