@@ -1,5 +1,4 @@
 Ext.define('GeoXMap.tools.components.GoToForm', {
-    // extend: 'Ext.panel.Panel',
     extend: 'GeoXMap.tools.templates.ContextWindow',
 
     xtype: 'gotoform',
@@ -25,6 +24,7 @@ Ext.define('GeoXMap.tools.components.GoToForm', {
                 {
                     xtype: 'button',
                     reference:'cancel',
+                    userCls: 'map-btn',
                     // ui: 'map-tool-profile1',
                     iconCls: 'fa fa-times',
                     handler: 'onCancel'
@@ -32,6 +32,7 @@ Ext.define('GeoXMap.tools.components.GoToForm', {
                 {
                     xtype: 'button',
                     reference: 'accept',
+                    userCls: 'map-btn',
                     // ui: 'map-tool-profile1',
                     iconCls: 'fa fa-check',
                     handler: 'onAccept'
@@ -86,6 +87,7 @@ Ext.define('GeoXMap.tools.components.GoToForm', {
                 {
                     xtype: 'button',
                     disabled: true,
+                    userCls: 'map-btn',
                     // ui: 'map-tool-profile1',
                     iconCls: 'fa fa-arrow-right'
                 },

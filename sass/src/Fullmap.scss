@@ -1,0 +1,77 @@
+/**
+  Color rules for map components
+ */
+:root {
+  --map-base-color: #693D3D;
+  --map-hover-color: #BA5536;
+  --map-pressed-color: #46211A;
+}
+
+/* Map button rules */
+.map-btn {
+  background: var(--map-base-color);
+  border-color: var(--map-base-color);
+}
+
+.map-btn-left {
+  border-radius: 0 10px 10px 0 !important;
+}
+
+.map-btn-right {
+  border-radius: 10px 0 0 10px !important
+}
+
+.map-btn-top {
+  border-radius: 0 0 10px 10px !important
+}
+
+.map-btn-down {
+  border-radius: 10px 10px 0 0 !important
+}
+
+.map-btn.x-btn-pressed {
+  background: var(--map-pressed-color) !important;
+  border-color: var(--map-base-color) !important;
+}
+
+.map-btn.x-btn-over {
+  background: var(--map-hover-color);
+  border-color: var(--map-base-color);
+}
+
+.map-btn.x-btn-disabled {
+  background: var(--map-base-color) !important;
+}
+
+
+/* Map panel rules */
+.map-panel {
+
+}
+
+.map-panel.x-panel-header {
+
+}
+
+
+/* Map window rules */
+.map-window {
+  border-color: var(--map-base-color);
+}
+
+.map-window > .x-window-header {
+  background: var(--map-base-color);
+  border-color: var(--map-base-color);
+}
+
+.map-window > .x-window-header.x-window-header-default .x-tool-img {
+  background: var(--map-base-color);
+}
+
+/* Map tree panel (layers) */
+.map-window .x-tree-expander,
+.map-window .x-tree-checkbox ,
+.map-window .x-tree-icon {
+  color: black;
+}
+

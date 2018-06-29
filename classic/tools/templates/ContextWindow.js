@@ -15,6 +15,8 @@ Ext.define('GeoXMap.tools.templates.ContextWindow', {
 
     layout: 'fit',
 
+    userCls: 'map-window',
+
     getMapScope: function () {
         return this.mapscope;
     },

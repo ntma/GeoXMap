@@ -23,11 +23,12 @@ Ext.define('GeoXMap.map.Map', {
         view: new ol.View()
     }),
 
-    setMapView: function (center, zoom) {
+    setMapView: function (center, zoom, projection) {
         // TODO: set projection
         this.getMap().setView(new ol.View({
             center: ol.proj.fromLonLat(center),
-            zoom: zoom
+            zoom: zoom,
+            projection: projection
         }));
     },
 

@@ -14,7 +14,10 @@ Ext.define('GeoXMap.tools.controls.Distance', {
 
         this.measureLayer = null;
 
-        this.drawColor = (config.color) ? config.color: '#ffcc33';
+        const params = config.params;
+
+        this.drawColor = (params.color) ? params.color : '#ffcc33';
+        this.drawWidth = (params.width) ? params.width : 2;
 
         // Create Layer
         // Add Layer
@@ -97,7 +100,7 @@ Ext.define('GeoXMap.tools.controls.Distance', {
                 }),
                 stroke: new ol.style.Stroke({
                     color: me.drawColor,
-                    width: 2
+                    width: me.drawWidth
                 }),
                 image: new ol.style.Circle({
                     radius: 7,

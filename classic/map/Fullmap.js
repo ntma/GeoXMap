@@ -20,16 +20,18 @@ Ext.define('GeoXMap.map.Fullmap', {
 
         'GeoXMap.tools.components.Layers',
         'GeoXMap.tools.components.GoToForm',
-        'GeoXMap.tools.components.Search'
+        'GeoXMap.tools.components.Search',
+        'GeoXMap.tools.components.Messages'
     ],
-
-    // ui: 'map-panel-profile1',
 
     /**
      * Params:
      *
-     *   - mapTools set of tools to be used
-     *      - tools
+     *   - tools set of tools to be used
+     *      - left
+     *      - right
+     *      - down
+     *      - up
      *      - cfg
      *   - layersStore: GeoExt layers store
      *   - autoLoad: Load layers on ready
@@ -39,8 +41,7 @@ Ext.define('GeoXMap.map.Fullmap', {
 
     items: [
         {
-            xtype: 'map',
-            reference: 'map'
+            xtype: 'map'
         }
     ],
 
@@ -68,16 +69,18 @@ Ext.define('GeoXMap.map.Fullmap', {
         /**
          * Map Tools
          */
-        if (this.mapTools) {
+        const tools = config.tools;
+
+        if (tools) {
 
             const me = this;
 
             // Left panel tools
-            const leftPanel = this.createToolsPanel(this.mapTools.left, 'vbox', 'start', 'left');
-            const rightPanel = this.createToolsPanel(this.mapTools.right, 'vbox', 'end', 'right');
+            const leftPanel = this.createToolsPanel(tools.left, 'vbox', 'start', 'left');
+            const rightPanel = this.createToolsPanel(tools.right, 'vbox', 'end', 'right');
 
-            const downPanel = this.createToolsPanel(this.mapTools.down, 'hbox', 'center', 'down');
-            const topPanel = this.createToolsPanel(this.mapTools.up, 'hbox', 'start', 'top');
+            const downPanel = this.createToolsPanel(tools.down, 'hbox', 'center', 'down');
+            const topPanel = this.createToolsPanel(tools.up, 'hbox', 'start', 'top');
 
             this.on('afterrender', function () {
 
@@ -123,7 +126,7 @@ Ext.define('GeoXMap.map.Fullmap', {
                     layers.render(mapEl);
                 }
 
-                const cTools = me.mapTools.custom;
+                const cTools = tools.custom;
 
                 if (cTools.length > 0) {
                     for (let idx in cTools) {
@@ -135,11 +138,13 @@ Ext.define('GeoXMap.map.Fullmap', {
                         t['mapscope'] = me;
 
                         if (pos && Array.isArray(pos) && pos.length === 2) {
-                            const wrapper = Ext.create('Ext.Container', {
-                                items: t
-                            });
 
-                            wrapper.on('afterlayout', function () {
+                            // TODO: Wondering if this property isn't dirty
+                            t['floating'] = true;
+
+                            const wrapper = Ext.create(t);
+
+                            wrapper.on('afterrender', function () {
                                 wrapper.anchorTo(me, 'tl-tl', pos);
                             });
 
@@ -162,9 +167,7 @@ Ext.define('GeoXMap.map.Fullmap', {
     },
 
     loadLayers: function () {
-        console.log("[Fullmap] Load layers");
-
-        const me =this;
+        // console.log("[Fullmap] Load layers");
 
         this.getOlMap().addLayer(new ol.layer.Group({
             name: 'Stamen Group',
@@ -185,7 +188,7 @@ Ext.define('GeoXMap.map.Fullmap', {
     },
 
     reloadLayers: function () {
-        console.log("[Fullmap] Reload layers");
+        // console.log("[Fullmap] Reload layers");
 
         this.removeLayers();
 
@@ -193,7 +196,7 @@ Ext.define('GeoXMap.map.Fullmap', {
     },
 
     removeLayers: function () {
-        console.log("[Fullmap] Remove layers");
+        // console.log("[Fullmap] Remove layers");
 
         this.getMap().removeLayers();
 
@@ -204,10 +207,13 @@ Ext.define('GeoXMap.map.Fullmap', {
      * Initialization
      */
     initializeMapView: function () {
-        const zoom = this.zoom ? this.zoom : 12;
-        const center = this.center ? this.center : [-122.416667, 37.783333];
+        const view = this.view;
 
-        this.getMap().setMapView(center, zoom);
+        const zoom = view.zoom ? view.zoom : 12;
+        const center = view.center ? view.center : [-122.416667, 37.783333];
+        const projection = view.projection ? view.projection : 3857;
+
+        this.getMap().setMapView(center, zoom, 'EPSG:' + projection);
     },
 
     /**
@@ -226,11 +232,11 @@ Ext.define('GeoXMap.map.Fullmap', {
     },
 
     getExtent: function () {
-        return this.extent;
+        return this.view.extent;
     },
 
     getZoom: function () {
-        return this.zoom;
+        return this.view.zoom;
     },
 
     /**
@@ -240,11 +246,11 @@ Ext.define('GeoXMap.map.Fullmap', {
         let toolPanel = null;
 
         if (tools.length > 0) {
-            const buttonSize = this.mapTools.css.all.width;//'40px';//'40px';
-            const colorPalette = this.mapTools.css.all.colorPalette;
+            const buttonSize = this.tools.css.all.width;//'40px';//'40px';
+            const colorPalette = this.tools.css.all.colorPalette;
 
-            const allCSS = this.mapTools.css.all;
-            const specificCSS = this.mapTools.css[side];
+            const allCSS = this.tools.css.all;
+            const specificCSS = this.tools.css[side];
 
             let buttonCSS = Object.assign({},allCSS, specificCSS);
 
@@ -296,7 +302,9 @@ Ext.define('GeoXMap.map.Fullmap', {
                     style: buttonCSS,
                     side: side,
                     // ui: 'map-tool-' + colorPalette,
-                    userCls: 'mapbtn mapbtn-' + side,
+                    userCls: 'map-btn map-btn-' + side,
+
+                    focusable: false,
 
                     plugins: 'responsive',
                     responsiveConfig: {
@@ -325,13 +333,11 @@ Ext.define('GeoXMap.map.Fullmap', {
 
     createLayersPanel: function (layersXtype) {
 
-        const colorPalette = this.mapTools.css.all.colorPalette;
+        // const colorPalette = this.tools.css.all.colorPalette;
         const store = this.store;
 
         const me = this;
         return Ext.create('Ext.window.Window', {
-            reference: 'floatpanel',
-
             // ui:'map-window-' + colorPalette,
 
             title: 'Layers',
@@ -343,10 +349,11 @@ Ext.define('GeoXMap.map.Fullmap', {
 
             layout: 'fit',
 
+            userCls: 'map-window',
+
             items: [
                 {
                     xtype: (layersXtype) ?  layersXtype : 'layers',
-                    // ui: 'map-panel-profile1',
                     store: store,
                     mapscope: me
                 }
