@@ -1,28 +1,22 @@
 Ext.define('GeoXMap.tools.controls.Layers', {
-    extend: 'Ext.button.Button',
+    extend: 'GeoXMap.tools.templates.MButton',
     xtype: 'maplayers',
 
     iconCls: 'fa fa-list',
 
     constructor(config){
-        this._layerspanel = config.mapscope.getLayersPanel();
-
-        if(config.animated){
-            this._layerspanel.animateTarget = this;
+        if(!config.params){
+            config['params'] = {};
         }
+
+        const store = config.mapscope.store;
+
+        config.params['xtype'] = 'layers';
+        config.params['store'] = store;
+        config['animated'] = false;
+        config['clickopen'] = true;
+        config['stayopen'] = false;
 
         this.callParent([config])
-    },
-
-    listeners: {
-        click: function(){
-            const layerspanel = this._layerspanel;
-
-            if(layerspanel.isHidden()){
-                layerspanel.show();
-            } else {
-                layerspanel.hide();
-            }
-        }
     }
 });

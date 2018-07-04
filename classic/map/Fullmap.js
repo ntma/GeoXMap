@@ -7,6 +7,7 @@ Ext.define('GeoXMap.map.Fullmap', {
 
         'GeoXMap.tools.templates.PButton',
         'GeoXMap.tools.templates.CButton',
+        'GeoXMap.tools.templates.MasterDetail',
 
         'GeoXMap.tools.controls.ZoomIn',
         'GeoXMap.tools.controls.ZoomOut',
@@ -17,11 +18,13 @@ Ext.define('GeoXMap.map.Fullmap', {
         'GeoXMap.tools.controls.Distance',
         'GeoXMap.tools.controls.Area',
         'GeoXMap.tools.controls.Layers',
+        'GeoXMap.tools.controls.Query',
 
         'GeoXMap.tools.components.Layers',
         'GeoXMap.tools.components.GoToForm',
         'GeoXMap.tools.components.Search',
-        'GeoXMap.tools.components.Messages'
+        'GeoXMap.tools.components.Messages',
+        'GeoXMap.tools.components.PointInfo'
     ],
 
     /**
@@ -51,20 +54,10 @@ Ext.define('GeoXMap.map.Fullmap', {
         this.autoLoad = !!config.autoLoad;
 
         /**
-         * GeoExt store
+         * Layers Store
          */
-        const me = this;
-        // TODO: Test if type geoext store
-        this.store = Ext.create('GeoExt.data.store.LayersTree', {
-            layerGroup: me.getOlMap().getLayerGroup()
-        });
-
-        /**
-         * Layers panel
-         */
-        const layers = this.createLayersPanel();
-
-        this._layerspanel = layers;
+        // TODO: This is the store that will actually load layers into the map
+        // this.store = null
 
         /**
          * Map Tools
@@ -72,9 +65,6 @@ Ext.define('GeoXMap.map.Fullmap', {
         const tools = config.tools;
 
         if (tools) {
-
-            const me = this;
-
             // Left panel tools
             const leftPanel = this.createToolsPanel(tools.left, 'vbox', 'start', 'left');
             const rightPanel = this.createToolsPanel(tools.right, 'vbox', 'end', 'right');
@@ -82,81 +72,7 @@ Ext.define('GeoXMap.map.Fullmap', {
             const downPanel = this.createToolsPanel(tools.down, 'hbox', 'center', 'down');
             const topPanel = this.createToolsPanel(tools.up, 'hbox', 'start', 'top');
 
-            this.on('afterrender', function () {
-
-                const mapEl = this.getEl();
-
-                if (leftPanel) {
-                    leftPanel.on('afterlayout', function () {
-                        leftPanel.anchorTo(me, 'tl-tl');
-                    });
-
-                    leftPanel.render(mapEl);
-                }
-
-                if (rightPanel) {
-                    rightPanel.on('afterlayout', function () {
-                        rightPanel.anchorTo(me, 'tr-tr');
-                    });
-
-                    rightPanel.render(mapEl);
-                }
-
-                if (downPanel) {
-                    downPanel.on('afterlayout', function () {
-                        downPanel.anchorTo(me, 'bl-bl');
-                    });
-
-                    downPanel.render(mapEl);
-                }
-
-                if (topPanel) {
-                    topPanel.on('afterlayout', function () {
-                        topPanel.anchorTo(me, 'tl-tl');
-                    });
-
-                    topPanel.render(mapEl);
-                }
-
-                if (layers) {
-                    layers.on('afterlayout', function () {
-                        layers.anchorTo(me, 'tr-tr');
-                    });
-
-                    layers.render(mapEl);
-                }
-
-                const cTools = tools.custom;
-
-                if (cTools.length > 0) {
-                    for (let idx in cTools) {
-
-                        const t = cTools[idx];
-
-                        const pos = t.pos;
-
-                        t['mapscope'] = me;
-
-                        if (pos && Array.isArray(pos) && pos.length === 2) {
-
-                            // TODO: Wondering if this property isn't dirty
-                            t['floating'] = true;
-
-                            const wrapper = Ext.create(t);
-
-                            wrapper.on('afterrender', function () {
-                                wrapper.anchorTo(me, 'tl-tl', pos);
-                            });
-
-                            wrapper.render(mapEl);
-
-                        } else {
-                            console.log("[MapTools] No position specified for custom tool");
-                        }
-
-                    }
-                }
-            });
+            this._ctools = tools.custom;
 
             this._left = leftPanel;
             this._right = rightPanel;
@@ -227,8 +143,8 @@ Ext.define('GeoXMap.map.Fullmap', {
         return this.getMap().getMap();
     },
 
-    getLayersPanel() {
-        return this._layerspanel;
+    getMasterDetail() {
+        return this._masterdetail;
     },
 
     getExtent: function () {
@@ -247,12 +163,12 @@ Ext.define('GeoXMap.map.Fullmap', {
 
         if (tools.length > 0) {
             const buttonSize = this.tools.css.all.width;//'40px';//'40px';
-            const colorPalette = this.tools.css.all.colorPalette;
+            // const colorPalette = this.tools.css.all.colorPalette;
 
             const allCSS = this.tools.css.all;
             const specificCSS = this.tools.css[side];
 
-            let buttonCSS = Object.assign({},allCSS, specificCSS);
+            let buttonCSS = Object.assign({}, allCSS, specificCSS);
 
             const me = this;
             const processedTools = [];
@@ -290,87 +206,107 @@ Ext.define('GeoXMap.map.Fullmap', {
 
             toolPanel = Ext.create('Ext.container.Container', {
                 floating: true,
-                layout: {
-                    type: layout,
-                    pack: alignment,
-                    align: 'middle'
-                },
 
                 shadow: false,
 
-                defaults: {
-                    style: buttonCSS,
-                    side: side,
-                    // ui: 'map-tool-' + colorPalette,
-                    userCls: 'map-btn map-btn-' + side,
-
-                    focusable: false,
-
-                    plugins: 'responsive',
-                    responsiveConfig: {
-                        'width <= 768':{
-                            width: buttonSize,
-                            height: buttonSize
-                        },
-                        'width > 768 && width <= 1080':{
-                            width: buttonSize + 5,
-                            height: buttonSize + 5
-                        },
-                        'width > 1080':{
-                            width: buttonSize + 10,
-                            height: buttonSize + 10
-                        },
-                    },
-                    mapscope: me
+                layout: {
+                    type: (side === 'right' || side === 'left') ? 'hbox' : 'vbox',
+                    align: 'stretch'
                 },
 
-                items: processedTools
+                items: [
+                    {
+                        xtype: 'container',
+                        layout: {
+                            type: layout,
+                            pack: alignment,
+                            align: 'middle'
+                        },
+
+                        defaults: {
+                            style: buttonCSS,
+                            side: side,
+                            // ui: 'map-tool-' + colorPalette,
+                            userCls: 'map-btn map-btn-' + side,
+
+                            focusable: false,
+
+                            plugins: 'responsive',
+                            responsiveConfig: {
+                                'width <= 768': {
+                                    width: buttonSize,
+                                    height: buttonSize
+                                },
+                                'width > 768 && width <= 1080': {
+                                    width: buttonSize + 5,
+                                    height: buttonSize + 5
+                                },
+                                'width > 1080': {
+                                    width: buttonSize + 10,
+                                    height: buttonSize + 10
+                                },
+                            },
+                            mapscope: me
+                        },
+
+                        items: processedTools
+                    }
+                ]
             });
+
+            /**
+             * TODO: We are forcing the masterdetail to anchor to the right side, All the others are ignored
+             */
+            if ('right' === side) {
+                const md = this.createMasterDetail(side);
+
+                if (side === 'left' || side === 'top') {
+                    toolPanel.moveAfter(md, null);
+                } else {
+                    toolPanel.add(md);
+                }
+
+                this._masterdetail = md;
+            }
         }
 
         return toolPanel;
     },
 
-    createLayersPanel: function (layersXtype) {
+    createMasterDetail: function (side) {
+        let resizeSide = 'w';
 
-        // const colorPalette = this.tools.css.all.colorPalette;
-        const store = this.store;
+        switch(side){
+            case 'left':
+                resizeSide = 'e';
+                break;
+            case 'right':
+                resizeSide = 'w';
+                break;
+            case 'top':
+                resizeSide = 's';
+                break;
+            default:
+                resizeSide = 'n';
+                break;
+        }
 
-        const me = this;
-        return Ext.create('Ext.window.Window', {
-            // ui:'map-window-' + colorPalette,
-
-            title: 'Layers',
-
-            resizable: false,
-            hidden: true,
-            hideMode: 'offsets',
-            draggable: true,
-
-            layout: 'fit',
-
-            userCls: 'map-window',
-
-            items: [
-                {
-                    xtype: (layersXtype) ?  layersXtype : 'layers',
-                    store: store,
-                    mapscope: me
-                }
-            ],
-            listeners: {
-                beforeclose: function () {
-
-                    this.hide();
-
-                    return false;
-                }
-            }
+        return Ext.create({
+            xtype: 'masterdetail',
+            resizable: {
+                handles: resizeSide
+            },
         });
     },
 
     /**
      * Event Functions
+     */
+
+    /**
+     * On resize, adjust the size and anchors of floating components
+     * @param w
+     * @param h
      */
     onResize: function (w, h) {
         let lw = 0,
@@ -397,15 +333,16 @@ Ext.define('GeoXMap.map.Fullmap', {
             this._up.anchorTo(this, 'tl-tl', [lw, 0]);
         }
 
-        if (this._layerspanel) {
-            this._layerspanel.setHeight(h);
-            this._layerspanel.setWidth(Math.floor(0.25 * w));
-            this._layerspanel.anchorTo(this, 'tr-tr');
+        if (this._masterdetail) {
+            this._masterdetail.setWidth(Math.floor(0.25 * w));
         }
 
         this.callParent()
     },
 
+    /**
+     * On render, initialize the geospatial map and load layers
+     */
     onRender: function () {
         this.callParent();
 
@@ -413,6 +350,100 @@ Ext.define('GeoXMap.map.Fullmap', {
 
         if (this.autoLoad) {
             this.loadLayers();
+        }
+    },
+
+    /**
+     * On afterrender, finalize the setup of all the overlay components
+     */
+    afterRender: function () {
+        this.callParent();
+
+        const me = this;
+        const mapEl = this.getEl(),
+            leftPanel = this._left,
+            rightPanel = this._right,
+            topPanel = this._up,
+            downPanel = this._down,
+            cTools = this._ctools;
+
+        if (leftPanel) {
+            leftPanel.on('afterlayout', function () {
+                leftPanel.anchorTo(me, 'tl-tl');
+            });
+
+            leftPanel.render(mapEl);
+        }
+
+        if (rightPanel) {
+            rightPanel.on('afterlayout', function () {
+                rightPanel.anchorTo(me, 'tr-tr');
+            });
+
+            rightPanel.render(mapEl);
+        }
+
+        if (downPanel) {
+            downPanel.on('afterlayout', function () {
+                downPanel.anchorTo(me, 'bl-bl');
+            });
+
+            downPanel.render(mapEl);
+        }
+
+        if (topPanel) {
+            topPanel.on('afterlayout', function () {
+                topPanel.anchorTo(me, 'tl-tl');
+            });
+
+            topPanel.render(mapEl);
+        }
+
+        if (cTools.length > 0) {
+            for (let idx in cTools) {
+
+                const t = cTools[idx];
+
+                const pos = t.pos;
+
+                t['mapscope'] = me;
+
+                if (pos && Array.isArray(pos) && pos.length === 2) {
+
+                    // TODO: Wondering if this property isn't dirty
+                    t['floating'] = true;
+
+                    const wrapper = Ext.create(t);
+
+                    wrapper.on('afterrender', function () {
+                        wrapper.anchorTo(me, 'tl-tl', pos);
+                    });
+
+                    wrapper.render(mapEl);
+
+                } else {
+                    console.log("[MapTools] No position specified for custom tool");
+                }
+
+            }
+        }
+    },
+
+    onDestroy: function(){
+        if(this._left){
+            this._left.destroy();
+        }
+
+        if(this._right){
+            this._right.destroy();
+        }
+
+        if(this._up){
+            this._up.destroy();
+        }
+
+        if(this._down){
+            this._down.destroy();
         }
     }
 });

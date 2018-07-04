@@ -52,28 +52,30 @@ Ext.define('GeoXMap.tools.components.Layers', {
 
         // TODO: mapscope shouldnt be so deep
 
-        this.mapscope.on('afterloadlayers', function(){
-            const layerGroup = me.mapscope.getOlMap().getLayerGroup();
-
-            const store = Ext.create('GeoExt.data.store.LayersTree', {
-                layerGroup: layerGroup
-            });
-
-            me.setStore(store);
+        this.mapscope.on('afterloadlayers', function () {
+            me.resetStore();
         });
 
-        this.mapscope.on('afterremovelayers', function(){
+        this.mapscope.on('afterremovelayers', function () {
             const treeStore = me.getStore();
 
-            if(treeStore){
+            if (treeStore) {
                 treeStore.loadData({
                     root: {}
                 });
             }
         });
 
-        if (config.store) {
-            this.store = config.store;
-        }
+        me.resetStore();
+    },
+
+    resetStore: function () {
+        const layerGroup = this.mapscope.getOlMap().getLayerGroup();
+
+        const store = Ext.create('GeoExt.data.store.LayersTree', {
+            layerGroup: layerGroup
+        });
+
+        this.setStore(store);
     }
 });

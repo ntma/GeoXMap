@@ -38,6 +38,8 @@ Ext.define('GeoXMap.tools.templates.CButton', {
 
         this.position = params.position;
 
+        this.onclickOpen = (params.clickopen !== undefined) ? params.clickopen : true;
+
         const ctxw = Ext.create({
             xtype: ctxtype,
             mapscope: mapscope,
@@ -55,6 +57,10 @@ Ext.define('GeoXMap.tools.templates.CButton', {
         this.on('afterrender', function () {
             ctxw.render(mapscope.getEl());
         });
+
+        if(this.onclickOpen){
+            this.on('click', this.openWindow, this);
+        }
 
         this._contextWindow = ctxw;
     },
@@ -91,22 +97,26 @@ Ext.define('GeoXMap.tools.templates.CButton', {
         window.setPosition(newX + readjustX, newY + readjustY);
     },
 
-    listeners: {
-        click: function () {
-            const ctxw = this._contextWindow;
+    openWindow: function(){
+        const ctxw = this._contextWindow;
 
-            if (ctxw.isHidden()) {
-                ctxw.show();
-                ctxw.focus();
+        if (ctxw.isHidden()) {
+            ctxw.show();
+            ctxw.focus();
 
-                if(this._firstShow && this.position === 'anchor') {
-                    this.alignCtxWindow();
+            if(this._firstShow && this.position === 'anchor') {
+                this.alignCtxWindow();
 
-                    this._firstShow = false;
-                }
-            } else {
-                ctxw.hide();
+                this._firstShow = false;
             }
+        } else {
+            ctxw.hide();
+        }
+    },
+
+    onDestroy: function () {
+        if(this._contextWindow){
+            this._contextWindow.destroy();
         }
     }
 });

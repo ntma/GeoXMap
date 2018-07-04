@@ -10,11 +10,11 @@ Ext.define('GeoXMap.tools.templates.PButton', {
     listeners: {
         toggle: function (btn, pressed) {
 
-            if(pressed){
-                console.log("Toggle activated");
-            } else {
-                console.log("Toggle deactivated");
-            }
+            // if(pressed){
+            //     console.log("Toggle activated");
+            // } else {
+            //     console.log("Toggle deactivated");
+            // }
         }
     }
 });

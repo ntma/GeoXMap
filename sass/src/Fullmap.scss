@@ -46,13 +46,24 @@
 
 /* Map panel rules */
 .map-panel {
-
+  border-color: var(--map-base-color);
 }
 
-.map-panel.x-panel-header {
-
+.map-panel > .x-panel-header {
+  background: var(--map-base-color);
+  border-color: var(--map-base-color);
 }
 
+.map-panel > .x-panel-header.x-panel-header-default .x-tool-img {
+  background: var(--map-base-color);
+}
+
+/* Map tree panel (layers) */
+.map-panel .x-tree-expander,
+.map-panel .x-tree-checkbox ,
+.map-panel .x-tree-icon {
+  color: black;
+}
 
 /* Map window rules */
 .map-window {
