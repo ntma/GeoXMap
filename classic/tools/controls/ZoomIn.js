@@ -1,6 +1,6 @@
 Ext.define('GeoXMap.tools.controls.ZoomIn', {
     extend: 'Ext.button.Button',
-    xtype: 'zoomin',
+    xtype: 'geo_zoomin',
 
     iconCls: 'fa fa-plus',
 

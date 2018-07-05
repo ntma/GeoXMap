@@ -1,6 +1,6 @@
 Ext.define('GeoXMap.tools.controls.Remove', {
     extend: 'Ext.button.Button',
-    xtype: 'remove',
+    xtype: 'geo_remove',
 
     iconCls: 'fa fa-times',
 

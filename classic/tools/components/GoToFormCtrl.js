@@ -1,7 +1,7 @@
 Ext.define('GeoXMap.tools.components.GoToFormCtrl', {
     extend: 'Ext.app.ViewController',
 
-    alias: 'controller.gotoform',
+    alias: 'controller.geo_gotoform',
 
     onCancel: function(){
         this.getView().hide();

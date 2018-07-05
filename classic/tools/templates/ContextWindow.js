@@ -1,7 +1,7 @@
 Ext.define('GeoXMap.tools.templates.ContextWindow', {
     extend: 'Ext.window.Window',
 
-    xtype: 'ctxwindow',
+    xtype: 'geo_ctxwindow',
 
     header: false,
     resizable: false,

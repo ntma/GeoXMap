@@ -1,7 +1,7 @@
 Ext.define('GeoXMap.tools.components.Search', {
     extend: 'Ext.form.field.ComboBox',
 
-    xtype: 'search',
+    xtype: 'geo_search',
 
     displayField: 'name',
     valueField: 'lonlat',

@@ -1,7 +1,7 @@
 Ext.define('GeoXMap.tools.templates.CButton', {
     extend: 'Ext.button.Button',
 
-    xtype: 'ctxbtn',
+    xtype: 'geo_ctxbtn',
 
     constructor: function (config) {
 

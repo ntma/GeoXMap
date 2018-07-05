@@ -1,7 +1,7 @@
 Ext.define('GeoXMap.tools.templates.PButton', {
     extend: 'Ext.button.Button',
 
-    xtype: 'togglebtn',
+    xtype: 'geo_togglebtn',
 
     enableToggle: true,
 

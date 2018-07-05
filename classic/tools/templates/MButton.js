@@ -1,7 +1,7 @@
 Ext.define('GeoXMap.tools.templates.MButton', {
     extend: 'Ext.button.Button',
 
-    xtype: 'detailbtn',
+    xtype: 'geo_detailbtn',
 
     constructor: function (config) {
 

@@ -43,6 +43,9 @@
   background: var(--map-base-color) !important;
 }
 
+.map-tool-container {
+  z-index: 1 !important;
+}
 
 /* Map panel rules */
 .map-panel {

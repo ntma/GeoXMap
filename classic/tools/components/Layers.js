@@ -3,7 +3,7 @@
  */
 Ext.define('GeoXMap.tools.components.Layers', {
     extend: 'Ext.tree.Panel',
-    xtype: 'layers',
+    xtype: 'geo_layerspanel',
 
     requires: [
         'GeoExt.data.store.LayersTree'

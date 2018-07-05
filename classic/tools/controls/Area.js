@@ -1,7 +1,7 @@
 Ext.define('GeoXMap.tools.controls.Area', {
     extend: 'GeoXMap.tools.templates.PButton',
 
-    xtype: 'area',
+    xtype: 'geo_area',
 
     iconCls: 'fa fa-area-chart',
 

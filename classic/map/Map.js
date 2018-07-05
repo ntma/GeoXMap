@@ -1,24 +1,9 @@
 Ext.define('GeoXMap.map.Map', {
     extend: 'GeoExt.component.Map',
-    xtype: 'map',
+    xtype: 'geo_map',
 
     map: new ol.Map({
-        layers: [
-            new ol.layer.Group({
-                name: 'Stamen Group',
-                layers: [
-                    new ol.layer.Tile({
-                        source: new ol.source.Stamen({layer: 'watercolor'}),
-                        name: 'Stamen Watercolor'
-                    }),
-                    new ol.layer.Tile({
-                        source: new ol.source.Stamen({layer: 'terrain-labels'}),
-                        name: 'Stamen Terrain Labels'
-                    })
-                ],
-                visible: true
-            })
-        ],
+        layers: [],
         controls: [],
         view: new ol.View()
     }),
@@ -26,14 +11,14 @@ Ext.define('GeoXMap.map.Map', {
     setMapView: function (center, zoom, projection) {
         // TODO: set projection
         this.getMap().setView(new ol.View({
-            center: ol.proj.fromLonLat(center),
+            center: center,
             zoom: zoom,
             projection: projection
         }));
     },
 
     setMapCenter: function (center) {
-        this.getMap().setCenter(ol.proj.fromLonLat(center));
+        this.getMap().setCenter(center);
     },
 
     setMapZoom: function () {

@@ -1,7 +1,7 @@
 Ext.define('GeoXMap.tools.controls.Distance', {
     extend: 'GeoXMap.tools.templates.PButton',
 
-    xtype: 'distance',
+    xtype: 'geo_distance',
 
     iconCls: 'fa fa-pencil',
 

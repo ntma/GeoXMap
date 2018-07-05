@@ -1,7 +1,7 @@
 Ext.define('GeoXMap.tools.controls.Query', {
     extend: 'GeoXMap.tools.templates.MButton',
 
-    xtype: 'query',
+    xtype: 'geo_query',
 
     iconCls: 'fa fa-map-marker',
 
@@ -14,7 +14,7 @@ Ext.define('GeoXMap.tools.controls.Query', {
             config['params'] = {};
         }
 
-        config.params['xtype'] = 'pointinfo';
+        config.params['xtype'] = 'geo_pointinfo';
         config['clickopen'] = false;
 
         this.callParent([config]);

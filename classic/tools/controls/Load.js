@@ -1,6 +1,6 @@
 Ext.define('GeoXMap.tools.controls.Load', {
     extend: 'Ext.button.Button',
-    xtype: 'load',
+    xtype: 'geo_load',
 
     iconCls: 'fa fa-refresh',
 

@@ -1,6 +1,6 @@
 Ext.define('GeoXMap.tools.controls.Extent', {
     extend: 'Ext.button.Button',
-    xtype: 'extent',
+    xtype: 'geo_extent',
 
     text: 'E',
 

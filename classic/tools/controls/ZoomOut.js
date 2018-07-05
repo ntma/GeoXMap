@@ -1,6 +1,6 @@
 Ext.define('GeoXMap.tools.controls.ZoomOut', {
     extend: 'Ext.button.Button',
-    xtype: 'zoomout',
+    xtype: 'geo_zoomout',
 
     iconCls: 'fa fa-minus',
 

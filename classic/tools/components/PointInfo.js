@@ -1,7 +1,7 @@
 Ext.define('GeoXMap.tools.components.PointInfo', {
     extend: 'Ext.panel.Panel',
 
-    xtype: 'pointinfo',
+    xtype: 'geo_pointinfo',
 
     defaults: {
         margin: 10

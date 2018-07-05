@@ -1,6 +1,6 @@
 Ext.define('GeoXMap.tools.controls.Layers', {
     extend: 'GeoXMap.tools.templates.MButton',
-    xtype: 'maplayers',
+    xtype: 'geo_layers',
 
     iconCls: 'fa fa-list',
 
@@ -11,7 +11,7 @@ Ext.define('GeoXMap.tools.controls.Layers', {
 
         const store = config.mapscope.store;
 
-        config.params['xtype'] = 'layers';
+        config.params['xtype'] = 'geo_layerspanel';
         config.params['store'] = store;
         config['animated'] = false;
         config['clickopen'] = true;

@@ -1,6 +1,6 @@
 Ext.define('GeoXMap.map.Fullmap', {
     extend: 'Ext.panel.Panel',
-    xtype: 'fullmap',
+    xtype: 'geo_fullmap',
 
     requires: [
         'GeoXMap.map.Map',
@@ -28,30 +28,69 @@ Ext.define('GeoXMap.map.Fullmap', {
     ],
 
     /**
-     * Params:
-     *
-     *   - tools set of tools to be used
-     *      - left
-     *      - right
-     *      - down
-     *      - up
-     *      - cfg
-     *   - layersStore: GeoExt layers store
-     *   - autoLoad: Load layers on ready
-     *   -
+     * Events:
+     *   - afterloadlayers
+     *   - afterremovelayers
+     *   - ...
      */
+
+    /**
+     * Map tools configuration
+     */
+    config: {
+        /**
+         * Map View parameters
+         */
+        view: {
+            zoom: 12,
+            center: [-13627361.035049738, 4548863.085837512],
+            extent: [-13640450.876143575, 4531664.754473347, -13614271.193955902, 4566061.417201677],
+            projection: 3857
+        },
+
+        /**
+         * Map Tools configuration
+         */
+        tools: null
+    },
+
+
+    /**
+     * Tool panels reference (west, north, east, south)
+     */
+    _left: null,
+    _top: null,
+    _right: null,
+    _down: null,
+
+    /**
+     * Reference to custom tools (i.e. nominatim search)
+     * TODO: To be removed in future release
+     */
+    _cTools: null,
+
+    /**
+     * Reference for master detail panel
+     * TODO: multiple master details
+     */
+    _masterdetail: null,
+
+    /**
+     * Contender for layers
+     */
+    _rawLayers: null,
+
+
     layout: 'fit',
 
     items: [
         {
-            xtype: 'map'
+            xtype: 'geo_map'
         }
     ],
 
     constructor: function (config) {
         this.callParent([config]);
-
-        this.autoLoad = !!config.autoLoad;
 
         /**
          * Layers Store
@@ -82,23 +121,24 @@ Ext.define('GeoXMap.map.Fullmap', {
         }
     },
 
-    loadLayers: function () {
-        // console.log("[Fullmap] Load layers");
+    loadLayers: function (layers, append) {
+        if (!layers) {
+            return;
+        }
 
-        this.getOlMap().addLayer(new ol.layer.Group({
-            name: 'Stamen Group',
-            layers: [
-                new ol.layer.Tile({
-                    source: new ol.source.Stamen({layer: 'watercolor'}),
-                    name: 'Stamen Watercolor'
-                }),
-                new ol.layer.Tile({
-                    source: new ol.source.Stamen({layer: 'terrain-labels'}),
-                    name: 'Stamen Terrain Labels'
-                })
-            ],
-            visible: true
-        }));
+        if(!append){
+            this.removeLayers();
+        }
+
+        const olmap = this.getOlMap();
+
+        const layersArray = (Array.isArray(layers)) ? layers : [layers];
+
+        layersArray.forEach(function (layer) {
+            olmap.addLayer(layer);
+        });
+
+        this._rawLayers = (append) ? this._rawLayers.concat(layers) : layers;
 
         this.fireEvent('afterloadlayers');
     },
@@ -108,7 +148,7 @@ Ext.define('GeoXMap.map.Fullmap', {
 
         this.removeLayers();
 
-        this.loadLayers();
+        this.loadLayers(this._rawLayers);
     },
 
     removeLayers: function () {
@@ -123,11 +163,10 @@ Ext.define('GeoXMap.map.Fullmap', {
      * Initialization
      */
     initializeMapView: function () {
-        const view = this.view;
-
-        const zoom = view.zoom ? view.zoom : 12;
-        const center = view.center ? view.center : [-122.416667, 37.783333];
-        const projection = view.projection ? view.projection : 3857;
+        const view = this.view,
+            zoom = view.zoom,
+            center = view.center,
+            projection = view.projection;
 
         this.getMap().setMapView(center, zoom, 'EPSG:' + projection);
     },
@@ -136,7 +175,7 @@ Ext.define('GeoXMap.map.Fullmap', {
      * GETTERS
      */
     getMap() {
-        return this.down('map');
+        return this.down('geo_map');
     },
 
     getOlMap() {
@@ -214,6 +253,8 @@ Ext.define('GeoXMap.map.Fullmap', {
                     align: 'stretch'
                 },
 
+                userCls: 'map-tool-container',
+
                 items: [
                     {
                         xtype: 'container',
@@ -251,7 +292,13 @@ Ext.define('GeoXMap.map.Fullmap', {
 
                         items: processedTools
                     }
-                ]
+                ],
+                listeners: {
+                    afterlayout: function(){
+                        this.setZIndex(1);
+                        console.log(this)
+                    }
+                }
             });
 
             /**
@@ -276,7 +323,7 @@ Ext.define('GeoXMap.map.Fullmap', {
     createMasterDetail: function (side) {
         let resizeSide = 'w';
 
-        switch(side){
+        switch (side) {
             case 'left':
                 resizeSide = 'e';
                 break;
@@ -292,7 +339,7 @@ Ext.define('GeoXMap.map.Fullmap', {
         }
 
         return Ext.create({
-            xtype: 'masterdetail',
+            xtype: 'geo_masterdetail',
             resizable: {
                 handles: resizeSide
             },
@@ -348,9 +395,10 @@ Ext.define('GeoXMap.map.Fullmap', {
 
         this.initializeMapView();
 
-        if (this.autoLoad) {
-            this.loadLayers();
-        }
+        // TODO: Pass layers as a json config?
+        // if (this.autoLoad) {
+        //     this.loadLayers();
+        // }
     },
 
     /**
@@ -399,7 +447,7 @@ Ext.define('GeoXMap.map.Fullmap', {
             topPanel.render(mapEl);
         }
 
-        if (cTools.length > 0) {
+        if (cTools && cTools.length > 0) {
             for (let idx in cTools) {
 
                 const t = cTools[idx];
@@ -429,20 +477,20 @@ Ext.define('GeoXMap.map.Fullmap', {
         }
     },
 
-    onDestroy: function(){
-        if(this._left){
+    onDestroy: function () {
+        if (this._left) {
             this._left.destroy();
         }
 
-        if(this._right){
+        if (this._right) {
             this._right.destroy();
         }
 
-        if(this._up){
+        if (this._up) {
             this._up.destroy();
         }
 
-        if(this._down){
+        if (this._down) {
             this._down.destroy();
         }
     }

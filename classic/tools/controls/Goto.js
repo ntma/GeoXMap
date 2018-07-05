@@ -1,7 +1,7 @@
 Ext.define('GeoXMap.tools.controls.GoTo', {
     extend: 'GeoXMap.tools.templates.CButton',
 
-    xtype: 'goto',
+    xtype: 'geo_goto',
 
     iconCls: 'fa fa-location-arrow',
 
@@ -11,7 +11,7 @@ Ext.define('GeoXMap.tools.controls.GoTo', {
             config['params'] = {};
         }
 
-        config.params['ctxtype'] = 'gotoform';
+        config.params['ctxtype'] = 'geo_gotoform';
         config.params['position'] = 'anchor';
         config.params['ctxfocus'] = true;
 
