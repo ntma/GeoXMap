@@ -8,6 +8,7 @@ Ext.define('GeoXMap.map.Fullmap', {
         'GeoXMap.tools.templates.PButton',
         'GeoXMap.tools.templates.CButton',
         'GeoXMap.tools.templates.MasterDetail',
+        'GeoXMap.tools.templates.ToolPanel',
 
         'GeoXMap.tools.controls.ZoomIn',
         'GeoXMap.tools.controls.ZoomOut',
@@ -243,17 +244,13 @@ Ext.define('GeoXMap.map.Fullmap', {
                 }
             }
 
-            toolPanel = Ext.create('Ext.container.Container', {
-                floating: true,
-
-                shadow: false,
+            toolPanel = Ext.create({
+                xtype: 'geo_toolpanel',
 
                 layout: {
                     type: (side === 'right' || side === 'left') ? 'hbox' : 'vbox',
                     align: 'stretch'
                 },
-
-                userCls: 'map-tool-container',
 
                 items: [
                     {
@@ -292,13 +289,7 @@ Ext.define('GeoXMap.map.Fullmap', {
 
                         items: processedTools
                     }
-                ],
-                listeners: {
-                    afterlayout: function(){
-                        this.setZIndex(1);
-                        console.log(this)
-                    }
-                }
+                ]
             });
 
             /**
@@ -343,6 +334,8 @@ Ext.define('GeoXMap.map.Fullmap', {
             resizable: {
                 handles: resizeSide
             },
+            slided: true,
+            mapscope: this
         });
     },
 
@@ -382,6 +375,7 @@ Ext.define('GeoXMap.map.Fullmap', {
 
         if (this._masterdetail) {
             this._masterdetail.setWidth(Math.floor(0.25 * w));
+            this._masterdetail.up().anchorTo(this, 'tr-tr', [Math.floor(0.25 * w), 0]);
         }
 
         this.callParent()

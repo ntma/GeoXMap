@@ -44,16 +44,6 @@ Ext.define('GeoXMap.tools.templates.MButton', {
             ctx.onOpenWindow(params);
         }
 
-        if(stayopen || windowChange){
-            if (masterdetail.isHidden()) {
-                masterdetail.show();
-            }
-        } else {
-            if (masterdetail.isHidden()) {
-                masterdetail.show();
-            } else {
-                masterdetail.hide();
-            }
-        }
+        masterdetail.slideFx(false);
     }
 });
