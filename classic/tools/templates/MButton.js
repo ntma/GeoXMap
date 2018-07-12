@@ -20,6 +20,7 @@ Ext.define('GeoXMap.tools.templates.MButton', {
         }
     },
 
+    // TODO: needs a refactor
     openWindow: function (params, stayopen) {
         const masterdetail = this.mapscope.getMasterDetail();
         const ctx = this._context;
@@ -44,6 +45,16 @@ Ext.define('GeoXMap.tools.templates.MButton', {
             ctx.onOpenWindow(params);
         }
 
-        masterdetail.slideFx(false);
+        const slided = masterdetail.getSlided();
+
+        if(windowChange && !slided){
+            // Do nothing here
+        } else if(stayopen){
+            if(slided){
+                masterdetail.slideFx(false);
+            }
+        } else {
+            masterdetail.slideFx(!slided);
+        }
     }
 });

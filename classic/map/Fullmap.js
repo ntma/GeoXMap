@@ -334,7 +334,6 @@ Ext.define('GeoXMap.map.Fullmap', {
             resizable: {
                 handles: resizeSide
             },
-            slided: true,
             mapscope: this
         });
     },
@@ -359,23 +358,19 @@ Ext.define('GeoXMap.map.Fullmap', {
 
         if (this._right) {
             this._right.setHeight(h);
-            this._right.anchorTo(this, 'tr-tr', [1, 0]); // TODO: extjs bug? This should not be needed
             rw = this._right.getWidth();
         }
 
         if (this._down) {
             this._down.setWidth(w - lw - rw);
-            this._down.anchorTo(this, 'bl-bl', [lw, 0]);
         }
 
         if (this._up) {
             this._up.setWidth(w - lw - rw);
-            this._up.anchorTo(this, 'tl-tl', [lw, 0]);
         }
 
         if (this._masterdetail) {
             this._masterdetail.setWidth(Math.floor(0.25 * w));
-            this._masterdetail.up().anchorTo(this, 'tr-tr', [Math.floor(0.25 * w), 0]);
         }
 
         this.callParent()
@@ -409,8 +404,10 @@ Ext.define('GeoXMap.map.Fullmap', {
             downPanel = this._down,
             cTools = this._ctools;
 
+        const event = 'afterlayout';
+
         if (leftPanel) {
-            leftPanel.on('afterlayout', function () {
+            leftPanel.on(event, function () {
                 leftPanel.anchorTo(me, 'tl-tl');
             });
 
@@ -418,15 +415,20 @@ Ext.define('GeoXMap.map.Fullmap', {
         }
 
         if (rightPanel) {
-            rightPanel.on('afterlayout', function () {
-                rightPanel.anchorTo(me, 'tr-tr');
+            // TODO: masterdetail is bounded to the right panel ONLY, in future to be dynamic
+            rightPanel.on(event, function () {
+                const slided = me._masterdetail.getSlided();
+
+                const offset = (slided) ? [Math.floor(me._masterdetail.getWidth()), 0] : [0,0];
+
+                rightPanel.removeAnchor().anchorTo(me, 'tr-tr', offset);
             });
 
             rightPanel.render(mapEl);
         }
 
         if (downPanel) {
-            downPanel.on('afterlayout', function () {
+            downPanel.on(event, function () {
                 downPanel.anchorTo(me, 'bl-bl');
             });
 
@@ -434,7 +436,7 @@ Ext.define('GeoXMap.map.Fullmap', {
         }
 
         if (topPanel) {
-            topPanel.on('afterlayout', function () {
+            topPanel.on(event, function () {
                 topPanel.anchorTo(me, 'tl-tl');
             });
 

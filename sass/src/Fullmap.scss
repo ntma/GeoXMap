@@ -61,6 +61,20 @@
   background: var(--map-base-color);
 }
 
+/**
+  Accordion title
+ */
+.map-panel > .x-accordion-hd .x-panel-header-title{
+  color: white;
+}
+
+/**
+  Accordion tools
+ */
+.map-panel > .x-accordion-hd .x-tool-img{
+  color: white;
+}
+
 /* Map tree panel (layers) */
 .map-panel .x-tree-expander,
 .map-panel .x-tree-checkbox ,

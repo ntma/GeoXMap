@@ -13,6 +13,8 @@ Ext.define('GeoXMap.tools.templates.MasterDetail', {
 
     activeId: null,
 
+    slided: true,
+
     items: [],
 
     listeners: {
@@ -37,6 +39,8 @@ Ext.define('GeoXMap.tools.templates.MasterDetail', {
 
         const offset = (close) ? w2 - w3 : w2 - w4;
 
+        this.slided = close;
+
         const dur = (duration >= 0) ? duration : 1000;
 
         Ext.create('Ext.fx.Anim', {
@@ -46,5 +50,9 @@ Ext.define('GeoXMap.tools.templates.MasterDetail', {
                 left: offset
             }
         });
+    },
+
+    getSlided: function(){
+        return this.slided;
     }
 });
