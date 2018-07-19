@@ -21,7 +21,7 @@ git clone https://github.com/ntma/GeoXMap.git
 
 And add the source path to the `app.json` configuration:
 
-```json
+```
 "classpath": [
     "app",
     "${toolkit.name}/src",
@@ -32,7 +32,7 @@ And add the source path to the `app.json` configuration:
 ## How to use
 
 To create a new map using this library just declare:
-```json
+```
 {
     xtype: 'geoxfullmap'
 }
@@ -40,7 +40,7 @@ To create a new map using this library just declare:
 
 This will create a simple GeoExt map without any functionality other than what GeoExt offers.
 To overlay the geotools to this map: 
-```json
+```
 {
     xtype: 'geoxfullmap',
     tools: {
@@ -74,7 +74,7 @@ has a `getMap()` and `getOlMap()` which returns a reference to the GeoExt compon
 way, every interaction between the custom tool and the map API is possible.
 
 ##### CButton - For tools that open a context window;
-```json
+```
 {
     xtype: 'geo_ctxbtn',
     params: {
@@ -84,7 +84,7 @@ way, every interaction between the custom tool and the map API is possible.
 }
 ```
 ##### PButton - For tools that require activation/deactivation.
-```json
+```
 {
   // Will be bound to 'maptools' group. When pressed,
   // any toggable tool bound to this groupd will be untoggled
@@ -93,7 +93,7 @@ way, every interaction between the custom tool and the map API is possible.
 ```
 
 ##### MButton - For tools that control the MasterDetail panel content;
-```json
+```
 {
   xtype: 'geo_detailbtn',
   params: {
@@ -110,7 +110,7 @@ denser map data that does not fit into the context windows.
 
 At the moment, styling options are limited to changing the map colors. More options will come soon.
 
-```json
+```
 {
     xtype: 'geoxfullmap',
     tools: {
