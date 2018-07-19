@@ -21,7 +21,7 @@ Ext.define('GeoXMap.tools.components.PointInfo', {
         {
             xtype: 'panel',
 
-            flex: 1,
+            height: 120,
             userCls: 'map-panel',
 
             header: false,
@@ -46,7 +46,7 @@ Ext.define('GeoXMap.tools.components.PointInfo', {
                         {
                             xtype: 'displayfield',
                             value: 'Coordinate:',
-                            flex: 2,
+                            width: 100,
                             editable: false
                         },
                         {
@@ -66,19 +66,38 @@ Ext.define('GeoXMap.tools.components.PointInfo', {
                 {
                     xtype: 'displayfield',
                     fieldLabel: '# Features',
+                    labelWidth: 100,
                     value: 0,
+                    flex: 1,
                     style: {
                         textAlign: 'center'
                     },
-                    width: '100%',
                     editable: false
                 },
-
+                {
+                    xtype: 'container',
+                    layout: 'hbox',
+                    items: [
+                        {
+                            xtype: 'displayfield',
+                            value: 'Status:',
+                            width: 100,
+                            style: {
+                                textAlign: 'center'
+                            }
+                        },
+                        {
+                            xtype: 'progressbar',
+                            flex: 1,
+                            userCls: 'map-progress-bar'
+                        }
+                    ]
+                }
             ]
         },
         {
             xtype: 'container',
-            flex: 8,
+            flex: 1,
             layout: 'accordion',
             items: [
                 {
@@ -203,18 +222,23 @@ Ext.define('GeoXMap.tools.components.PointInfo', {
         // Set the coordinates
         const coordinateFields = this.down('panel').getRefItems()[0].getRefItems();
 
-        // In lon, lat
-        coordinateFields[1].setValue(coord[0]);
-        coordinateFields[2].setValue(coord[1]);
-
         // Header for the Ajax requests
         const header = {'INFO_FORMAT': 'application/json', 'FEATURE_COUNT': 50};
 
         // Get every layer at the clicked pixel
+        const extmap = this.mapscope.getMap();
         const olmap = this.mapscope.getOlMap();
         const olView = olmap.getView();
         const olResolution = olView.getResolution();
         const olProjection = olView.getProjection();
+
+        const projectionCode = parseInt(olProjection.getCode().split(':')[1]);
+
+        const lonLatCoords = (projectionCode === 4326) ? projectionCode : extmap.transformCoordinates(coord, projectionCode, 4326);
+
+        // In lon, lat
+        coordinateFields[1].setValue(lonLatCoords[0].toFixed(6));
+        coordinateFields[2].setValue(lonLatCoords[1].toFixed(6));
 
         let layersData = [];
 
@@ -264,6 +288,17 @@ Ext.define('GeoXMap.tools.components.PointInfo', {
 
         // Aggregated data extracted from the intersected layers
         let layerData = [];
+
+        const statusBar = this.down('progressbar');
+        const totalRequests = nRequests;
+
+        statusBar.setValue(0.0);
+
+        if(ajaxRequests.length === 0 ){
+            statusBar.setValue(1.0);
+
+            return;
+        }
 
         // For each prepared Ajax request
         ajaxRequests.forEach(function (request) {
@@ -320,8 +355,12 @@ Ext.define('GeoXMap.tools.components.PointInfo', {
 
                     // If no more pending requests
                     if (nRequests === 0) {
+                        statusBar.setValue(1.0);
+
                         me.updateFeatureCount(layersData.length); // update the total features retrieved
                         me.down('grid').getStore().loadData(layersData); // Load the first grid
+                    } else {
+                        statusBar.setValue(statusBar.getValue() + 1.0 / totalRequests);
                     }
                 }
             });

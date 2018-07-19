@@ -119,6 +119,12 @@ Ext.define('GeoXMap.map.Fullmap', {
 
             this._down = downPanel;
             this._up = topPanel;
+
+            const colors = tools.css.colors;
+
+            if(colors){
+                this.setColorProfile(colors);
+            }
         }
     },
 
@@ -336,6 +342,26 @@ Ext.define('GeoXMap.map.Fullmap', {
             },
             mapscope: this
         });
+    },
+
+    setColorProfile: function(colors){
+        const rootCSS = Ext.util.CSS.getRule(':root').style;
+
+        const base = colors.base,
+            hover = colors.hover,
+            pressed = colors.pressed;
+
+        if(base){
+            rootCSS.setProperty('--map-base-color', base);
+        }
+
+        if(hover){
+            rootCSS.setProperty('--map-hover-color', hover);
+        }
+
+        if(pressed){
+            rootCSS.setProperty('--map-pressed-color', pressed);
+        }
     },
 
     /**
