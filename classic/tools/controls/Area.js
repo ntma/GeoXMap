@@ -5,7 +5,7 @@ Ext.define('GeoXMap.tools.controls.Area', {
 
     iconCls: 'fa fa-area-chart',
 
-    toggleGroup: 'map-measuring',
+    // toggleGroup: 'map-measuring',
 
     constructor: function (config) {
         this.callParent([config]);
@@ -111,7 +111,13 @@ Ext.define('GeoXMap.tools.controls.Area', {
         });
 
         // Add layer to map
-        this.mapscope.getOlMap().addLayer(measureLayer);
+        // TODO: Adding this layer should not require this event listenner
+        // this.mapscope.getOlMap().addLayer(measureLayer);
+        const mapscope = this.mapscope;
+
+        mapscope.on('afterloadlayers', function(){
+            this.getOlMap().addLayer(measureLayer);
+        }, mapscope);
 
         // Store layer reference
         this.measureLayer = measureLayer;

@@ -5,9 +5,9 @@ Ext.define('GeoXMap.tools.controls.Query', {
 
     iconCls: 'fa fa-map-marker',
 
-    enableToggle: 'true',
+    enableToggle: true,
 
-    toggleGroup: 'query',
+    toggleGroup: 'maptools',
 
     constructor: function (config) {
         if(!config.params){

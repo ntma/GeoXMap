@@ -217,38 +217,6 @@ Ext.define('GeoXMap.map.Fullmap', {
             let buttonCSS = Object.assign({}, allCSS, specificCSS);
 
             const me = this;
-            const processedTools = [];
-
-            let spaceSize = 0;
-            for (let i = 0; i < tools.length; i++) {
-                // TODO: Check if xtype exists
-                const tool = tools[i];
-
-                if (tool.xtype !== 'placeholder') {
-                    if (spaceSize > 0) {
-                        let margin = '';
-
-                        switch (side) {
-                            case 'left':
-                                margin = spaceSize + 'px 0 0 0';
-                                break;
-                            case 'right':
-                                margin = '0 0 ' + spaceSize + 'px 0';
-                                break;
-                            default:
-                                break;
-                        }
-
-                        tool['margin'] = margin;
-
-                        spaceSize = 0;
-                    }
-
-                    processedTools.push(tool);
-                } else {
-                    spaceSize = tool.size;
-                }
-            }
 
             toolPanel = Ext.create({
                 xtype: 'geo_toolpanel',
@@ -293,7 +261,7 @@ Ext.define('GeoXMap.map.Fullmap', {
                             mapscope: me
                         },
 
-                        items: processedTools
+                        items: tools
                     }
                 ]
             });
