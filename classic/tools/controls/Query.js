@@ -1,51 +1,18 @@
 Ext.define('GeoXMap.tools.controls.Query', {
-    extend: 'GeoXMap.tools.templates.MButton',
+    extend: 'GeoXMap.tools.templates.MDToolTpl',
 
     xtype: 'geo_query',
 
     iconCls: 'fa fa-map-marker',
 
-    enableToggle: true,
-
-    toggleGroup: 'maptools',
-
     constructor: function (config) {
-        if(!config.params){
-            config['params'] = {};
+        if (!config.masterDetail) {
+            config['masterDetail'] = {};
         }
 
-        config.params['xtype'] = 'geo_pointinfo';
-        config['clickopen'] = false;
+        config.masterDetail['xtype'] = 'geo_pointinfo';
+        config.enableToggle = true;
 
         this.callParent([config]);
-    },
-
-    onClickMap: function(event){
-
-        const coord = event.coordinate;
-        const pixel = event.pixel;
-
-        const params = {
-            coords: coord,
-            pixel: pixel
-        };
-
-        this.openWindow(params, true);
-    },
-
-    listeners: {
-        toggle: function(scope,state){
-
-            const olmap = this.mapscope.getOlMap();
-
-            // TODO: https://openlayers.org/en/latest/apidoc/ol.CanvasMap.html
-            // single click is delayed by 250ms (default)
-
-            if(state){
-                olmap.on('singleclick', this.onClickMap, this);
-            } else {
-                olmap.un('singleclick', this.onClickMap, this);
-            }
-        }
     }
 });

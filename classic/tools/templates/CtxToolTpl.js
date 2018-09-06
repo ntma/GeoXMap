@@ -1,7 +1,45 @@
-Ext.define('GeoXMap.tools.templates.CButton', {
+Ext.define('GeoXMap.tools.templates.CtxToolTpl', {
     extend: 'Ext.button.Button',
 
-    xtype: 'geo_ctxbtn',
+    xtype: 'geo_ctxtooltpl',
+
+    // Public
+    ctxmenu: {
+        /**
+         * Xtype to the component to be show inside the context widnow
+         */
+        type: 'panel',
+
+
+        /**
+         * True if the context window should get focus on show
+         */
+        focusable: false,
+
+
+        /**
+         * If the ctx menu is anchored to the tool
+         */
+        anchored: true,
+    },
+
+    // Private
+
+    /**
+     * Floatable window which will wrap the context menu component
+     */
+    _contextWindow: null,
+
+    /**
+     * Side to anchor the context menu
+     * Defautls to left
+     */
+    _anchorSide: 'tl-tr',
+
+    /**
+     * Helper to initialize the context menu position
+     */
+    _firstShow: true,
 
     constructor: function (config) {
 
@@ -24,21 +62,18 @@ Ext.define('GeoXMap.tools.templates.CButton', {
                 break;
         }
 
-        this._firstShow = true;
-
         this._anchorSide = anchorSide;
 
-        const params = config.params;
 
         const me = this;
         const mapscope = this.mapscope;
+        const ctxmenu = config.ctxmenu;
 
-        const ctxtype = params.ctxtype ? params.ctxtype : 'panel';
-        const ctxfocus = params.ctxfocus;
+        const ctxtype = ctxmenu.type;
+        const ctxfocus = ctxmenu.focusable;
+        const ctxanchored = ctxmenu.anchored;
 
-        this.position = params.position;
-
-        this.onclickOpen = (params.clickopen !== undefined) ? params.clickopen : true;
+        // this.onclickOpen = (ctxmenu.clickopen !== undefined) ? ctxmenu.clickopen : true;
 
         const ctxw = Ext.create({
             xtype: ctxtype,
@@ -47,7 +82,7 @@ Ext.define('GeoXMap.tools.templates.CButton', {
         });
 
         mapscope.on('resize', function () {
-            if (me.position === 'anchor') {
+            if (ctxanchored) {
                 me.alignCtxWindow();
             } else {
                 ctxw.center();
@@ -58,9 +93,9 @@ Ext.define('GeoXMap.tools.templates.CButton', {
             ctxw.render(mapscope.getEl());
         });
 
-        if(this.onclickOpen){
-            this.on('click', this.openWindow, this);
-        }
+        // if(this.onclickOpen){
+        this.on('click', this.openWindow, this);
+        // }
 
         this._contextWindow = ctxw;
     },
@@ -104,7 +139,7 @@ Ext.define('GeoXMap.tools.templates.CButton', {
             ctxw.show();
             ctxw.focus();
 
-            if(this._firstShow && this.position === 'anchor') {
+            if(this._firstShow && this.ctxmenu.anchored) {
                 this.alignCtxWindow();
 
                 this._firstShow = false;

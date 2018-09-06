@@ -1,5 +1,5 @@
 Ext.define('GeoXMap.tools.controls.Area', {
-    extend: 'GeoXMap.tools.templates.PButton',
+    extend: 'GeoXMap.tools.templates.TglToolTpl',
 
     xtype: 'geo_area',
 

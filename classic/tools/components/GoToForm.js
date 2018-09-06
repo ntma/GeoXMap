@@ -1,5 +1,5 @@
 Ext.define('GeoXMap.tools.components.GoToForm', {
-    extend: 'GeoXMap.tools.templates.ContextWindow',
+    extend: 'GeoXMap.tools.base.ContextWindow',
 
     xtype: 'geo_gotoform',
 

@@ -1,5 +1,5 @@
 Ext.define('GeoXMap.tools.controls.Distance', {
-    extend: 'GeoXMap.tools.templates.PButton',
+    extend: 'GeoXMap.tools.templates.TglToolTpl',
 
     xtype: 'geo_distance',
 

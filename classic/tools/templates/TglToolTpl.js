@@ -1,7 +1,7 @@
-Ext.define('GeoXMap.tools.templates.PButton', {
+Ext.define('GeoXMap.tools.templates.TglToolTpl', {
     extend: 'Ext.button.Button',
 
-    xtype: 'geo_togglebtn',
+    xtype: 'geo_tgltooltpl',
 
     enableToggle: true,
 

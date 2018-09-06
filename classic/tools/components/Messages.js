@@ -1,5 +1,5 @@
 Ext.define('GeoXMap.tools.components.Messages', {
-    extend: 'GeoXMap.tools.templates.ContextWindow',
+    extend: 'GeoXMap.tools.base.ContextWindow',
     xtype: 'geo_messages',
 
     layout: {

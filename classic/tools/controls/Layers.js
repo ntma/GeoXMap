@@ -1,21 +1,19 @@
 Ext.define('GeoXMap.tools.controls.Layers', {
-    extend: 'GeoXMap.tools.templates.MButton',
+    extend: 'GeoXMap.tools.templates.MDToolTpl',
+
     xtype: 'geo_layers',
 
     iconCls: 'fa fa-list',
 
-    constructor(config){
-        if(!config.params){
-            config['params'] = {};
+    constructor(config) {
+        if (!config.masterDetail) {
+            config['masterDetail'] = {};
         }
 
         const store = config.mapscope.store;
 
-        config.params['xtype'] = 'geo_layerspanel';
-        config.params['store'] = store;
-        config['animated'] = false;
-        config['clickopen'] = true;
-        config['stayopen'] = false;
+        config.masterDetail['xtype'] = 'geo_layerspanel';
+        config.masterDetail['store'] = store;
 
         this.callParent([config])
     }

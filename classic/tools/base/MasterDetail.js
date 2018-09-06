@@ -1,4 +1,4 @@
-Ext.define('GeoXMap.tools.templates.MasterDetail', {
+Ext.define('GeoXMap.tools.base.MasterDetail', {
     extend: 'Ext.panel.Panel',
 
     xtype: 'geo_masterdetail',

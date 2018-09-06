@@ -1,9 +1,13 @@
-Ext.define('GeoXMap.tools.templates.ToolPanel', {
+Ext.define('GeoXMap.tools.base.ToolPanel', {
     extend: 'Ext.container.Container',
 
     xtype: 'geo_toolpanel',
 
     floating: true,
+
+    focusable:false,
+
+    focusOnToFront: false,
 
     shadow: false,
 
@@ -11,7 +15,7 @@ Ext.define('GeoXMap.tools.templates.ToolPanel', {
 
     listeners: {
         afterlayout: function(){
-            this.setZIndex(1);
+            this.setZIndex(this.zindex);
         }
     }
 });

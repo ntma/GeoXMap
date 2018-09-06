@@ -97,8 +97,13 @@ Ext.define('GeoXMap.tools.components.PointInfo', {
         },
         {
             xtype: 'container',
+
             flex: 1,
-            layout: 'accordion',
+
+            layout: {
+                type: 'card'
+            },
+
             items: [
                 {
                     xtype: 'grid',
@@ -126,6 +131,49 @@ Ext.define('GeoXMap.tools.components.PointInfo', {
                             text: 'Geometry Type',
                             dataIndex: 'type',
                             flex: 1
+                        },
+                        {
+                            xtype: 'actioncolumn',
+                            width: 40,
+                            items: [
+                                {
+                                    iconCls: 'fa fa-info',
+                                    tooltip: 'Inspect',
+                                    handler: function (view, recIndex, cellIndex, item, e, record) {
+
+                                        const data = record.getData();
+
+                                        const properties = data.properties;
+
+                                        if (properties) {
+
+                                            const jsonData = [];
+
+                                            for (const key in properties) {
+                                                const f = {
+                                                    prop: key,
+                                                    value: properties[key]
+                                                };
+
+                                                jsonData.push(f);
+                                            }
+
+                                            const grid = this.up('grid');
+
+                                            const detailedGrid = grid.up().getRefItems()[1];
+
+                                            const store = detailedGrid.getStore();
+
+                                            // TODO: This should not be needed
+                                            store.removeAll();
+                                            store.loadData(jsonData, false);
+
+                                            grid.up().getLayout().setActiveItem(1);
+
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     ],
 
@@ -138,46 +186,38 @@ Ext.define('GeoXMap.tools.components.PointInfo', {
                             'type'
                         ],
                         data: [],
-                    },
-                    listeners: {
-                        select: function (grid, record) {
-                            const data = record.getData();
-
-                            const properties = data.properties;
-
-                            if (properties) {
-
-                                const data = [];
-
-                                for (const key in properties) {
-                                    const f = {
-                                        prop: key,
-                                        value: properties[key]
-                                    };
-
-                                    data.push(f);
-                                }
-
-                                const detailedGrid = this.up().getRefItems()[1];
-
-                                const store = detailedGrid.getStore();
-
-                                // Need to expand first, else the grid refresh freaks out
-                                detailedGrid.expand();
-
-                                store.loadData(data, false);
-                            }
-
-                            // grid.deselect(record);
-                        }
                     }
                 },
                 {
                     xtype: 'grid',
+
                     title: 'Geospatial Information',
                     titleAlign: 'center',
 
                     userCls: 'map-panel',
+
+                    dockedItems: [
+                        {
+                            xtype: 'toolbar',
+                            dock: 'top',
+                            layout: {
+                                type: 'hbox',
+                                align: 'right'
+                            },
+                            items: [
+                                {
+                                    xtype: 'button',
+                                    text: 'Back',
+                                    handler: function () {
+                                        const grid = this.up('grid');
+                                        const cardContainer = grid.up('container');
+
+                                        cardContainer.getLayout().setActiveItem(0);
+                                    }
+                                }
+                            ]
+                        }
+                    ],
 
                     columns: [
                         {
@@ -205,15 +245,14 @@ Ext.define('GeoXMap.tools.components.PointInfo', {
     ],
 
     onOpenWindow: function (params) {
+
         const me = this;
 
         // Collapse the second grid if expanded (to avoid a bug where the second store isn't found)
-        const gridContainer = this.getRefItems()[1];
-        const detailedGrid = gridContainer.getRefItems()[1];
+        const gridContainerLayout = this.getRefItems()[1].getLayout();
 
-        if (!detailedGrid.getCollapsed()) {
-            detailedGrid.collapse();
-        }
+        // TODO: This should only happen when in the second card
+        gridContainerLayout.setActiveItem(0);
 
         // Get the clicked coordinates
         const pixel = params.pixel;
@@ -294,7 +333,7 @@ Ext.define('GeoXMap.tools.components.PointInfo', {
 
         statusBar.setValue(0.0);
 
-        if(ajaxRequests.length === 0 ){
+        if (ajaxRequests.length === 0) {
             statusBar.setValue(1.0);
 
             return;
@@ -312,9 +351,9 @@ Ext.define('GeoXMap.tools.components.PointInfo', {
             Ext.Ajax.request({
                 url: url,
 
-                callback: function(req,success,response,opts){
+                callback: function (req, success, response, opts) {
 
-                    if(success){
+                    if (success) {
                         const obj = Ext.decode(response.responseText);
 
                         const features = obj.features; //.properties

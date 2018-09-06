@@ -5,10 +5,8 @@ Ext.define('GeoXMap.map.Fullmap', {
     requires: [
         'GeoXMap.map.Map',
 
-        'GeoXMap.tools.templates.PButton',
-        'GeoXMap.tools.templates.CButton',
-        'GeoXMap.tools.templates.MasterDetail',
-        'GeoXMap.tools.templates.ToolPanel',
+        'GeoXMap.tools.base.MasterDetail',
+        'GeoXMap.tools.base.ToolPanel',
 
         'GeoXMap.tools.controls.ZoomIn',
         'GeoXMap.tools.controls.ZoomOut',
@@ -62,7 +60,7 @@ Ext.define('GeoXMap.map.Fullmap', {
     _left: null,
     _top: null,
     _right: null,
-    _down: null,
+    _bottom: null,
 
     /**
      * Reference to custom tools (i.e. nominatim search)
@@ -109,16 +107,16 @@ Ext.define('GeoXMap.map.Fullmap', {
             const leftPanel = this.createToolsPanel(tools.left, 'vbox', 'start', 'left');
             const rightPanel = this.createToolsPanel(tools.right, 'vbox', 'end', 'right');
 
-            const downPanel = this.createToolsPanel(tools.down, 'hbox', 'center', 'down');
-            const topPanel = this.createToolsPanel(tools.up, 'hbox', 'start', 'top');
+            const bottomPanel = this.createToolsPanel(tools.bottom, 'hbox', 'center', 'bottom');
+            const topPanel = this.createToolsPanel(tools.top, 'hbox', 'end', 'top');
 
             this._ctools = tools.custom;
 
             this._left = leftPanel;
             this._right = rightPanel;
 
-            this._down = downPanel;
-            this._up = topPanel;
+            this._bottom = bottomPanel;
+            this._top = topPanel;
 
             const colors = tools.css.colors;
 
@@ -205,6 +203,11 @@ Ext.define('GeoXMap.map.Fullmap', {
      * AUX
      */
     createToolsPanel(tools, layout, alignment, side) {
+
+        if(!tools){
+            return null;
+        }
+
         let toolPanel = null;
 
         if (tools.length > 0) {
@@ -225,6 +228,8 @@ Ext.define('GeoXMap.map.Fullmap', {
                     type: (side === 'right' || side === 'left') ? 'hbox' : 'vbox',
                     align: 'stretch'
                 },
+
+                zindex: 1,
 
                 items: [
                     {
@@ -277,6 +282,8 @@ Ext.define('GeoXMap.map.Fullmap', {
                 } else {
                     toolPanel.add(md);
                 }
+
+                toolPanel['userCls'] = 'map-tool-container-detail';
 
                 this._masterdetail = md;
             }
@@ -352,15 +359,22 @@ Ext.define('GeoXMap.map.Fullmap', {
 
         if (this._right) {
             this._right.setHeight(h);
-            rw = this._right.getWidth();
+
+            // TODO: masterdetail will be dynamic in side. THis has to be too
+            if(this._masterdetail){
+                // Fetch the width from the visible border
+                this._right.getRefItems()[0].getWidth();
+            } else {
+                rw = this._right.getWidth();
+            }
         }
 
-        if (this._down) {
-            this._down.setWidth(w - lw - rw);
+        if (this._bottom) {
+            this._bottom.setWidth(w - lw - rw);
         }
 
-        if (this._up) {
-            this._up.setWidth(w - lw - rw);
+        if (this._top) {
+            this._top.setWidth(w - lw - rw);
         }
 
         if (this._masterdetail) {
@@ -394,8 +408,8 @@ Ext.define('GeoXMap.map.Fullmap', {
         const mapEl = this.getEl(),
             leftPanel = this._left,
             rightPanel = this._right,
-            topPanel = this._up,
-            downPanel = this._down,
+            topPanel = this._top,
+            bottomPanel = this._bottom,
             cTools = this._ctools;
 
         const event = 'afterlayout';
@@ -421,12 +435,12 @@ Ext.define('GeoXMap.map.Fullmap', {
             rightPanel.render(mapEl);
         }
 
-        if (downPanel) {
-            downPanel.on(event, function () {
-                downPanel.anchorTo(me, 'bl-bl');
+        if (bottomPanel) {
+            bottomPanel.on(event, function () {
+                bottomPanel.anchorTo(me, 'bl-bl');
             });
 
-            downPanel.render(mapEl);
+            bottomPanel.render(mapEl);
         }
 
         if (topPanel) {
@@ -476,12 +490,12 @@ Ext.define('GeoXMap.map.Fullmap', {
             this._right.destroy();
         }
 
-        if (this._up) {
-            this._up.destroy();
+        if (this._top) {
+            this._top.destroy();
         }
 
-        if (this._down) {
-            this._down.destroy();
+        if (this._bottom) {
+            this._bottom.destroy();
         }
     }
 });

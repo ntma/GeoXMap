@@ -1,4 +1,4 @@
-Ext.define('GeoXMap.tools.templates.ContextWindow', {
+Ext.define('GeoXMap.tools.base.ContextWindow', {
     extend: 'Ext.window.Window',
 
     xtype: 'geo_ctxwindow',
