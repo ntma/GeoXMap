@@ -18,6 +18,7 @@ Ext.define('GeoXMap.map.Fullmap', {
         'GeoXMap.tools.controls.Area',
         'GeoXMap.tools.controls.Layers',
         'GeoXMap.tools.controls.Query',
+        'GeoXMap.tools.controls.Sketch',
 
         'GeoXMap.tools.components.Layers',
         'GeoXMap.tools.components.GoToForm',

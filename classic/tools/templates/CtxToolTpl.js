@@ -74,7 +74,6 @@ Ext.define('GeoXMap.tools.templates.CtxToolTpl', {
         const ctxanchored = ctxmenu.anchored;
 
         // this.onclickOpen = (ctxmenu.clickopen !== undefined) ? ctxmenu.clickopen : true;
-
         const ctxw = Ext.create({
             xtype: ctxtype,
             mapscope: mapscope,
@@ -88,6 +87,19 @@ Ext.define('GeoXMap.tools.templates.CtxToolTpl', {
                 ctxw.center();
             }
         });
+
+        // const masterdetail = this.up('geo_toolpanel').down('geo_masterdetail');
+
+        // if(masterdetail){
+        //     console.log(this.up('geo_toolpanel'));
+        this.up('geo_toolpanel').on('startslide', function(){
+            me.closeWindow();
+        });
+
+        this.up('geo_toolpanel').on('endslide', function(){
+            me.alignCtxWindow();
+        });
+        // }
 
         this.on('afterrender', function () {
             ctxw.render(mapscope.getEl());
@@ -145,6 +157,15 @@ Ext.define('GeoXMap.tools.templates.CtxToolTpl', {
                 this._firstShow = false;
             }
         } else {
+            ctxw.hide();
+        }
+    },
+
+    // TODO: This function isnt consistent with the api
+    closeWindow: function(){
+        const ctxw = this._contextWindow;
+
+        if(!ctxw.isHidden()){
             ctxw.hide();
         }
     },

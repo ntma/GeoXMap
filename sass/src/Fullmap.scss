@@ -39,6 +39,10 @@
   border-color: var(--map-base-color);
 }
 
+.map-btn.x-btn-focus {
+  background-color: var(--map-base-color);
+}
+
 .map-btn.x-btn-disabled {
   background: var(--map-base-color) !important;
 }

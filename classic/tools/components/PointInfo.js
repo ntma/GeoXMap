@@ -411,5 +411,11 @@ Ext.define('GeoXMap.tools.components.PointInfo', {
 
         featureCount.setValue(count);
 
+    },
+
+    onToggleTool: function (scope, state) {
+
+        console.log("TOggle")
+
     }
 });
