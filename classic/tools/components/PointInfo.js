@@ -17,6 +17,30 @@ Ext.define('GeoXMap.tools.components.PointInfo', {
         columnsKey: ''
     },
 
+    highlightOverlay: null,
+    
+    hightlighFeature: true,
+
+    highlightStyle: new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: 'rgba(255, 0, 0, 0.2)'
+        }),
+        stroke: new ol.style.Stroke({
+            color: 'rgba(255, 0, 0, 0.5)',
+            lineDash: [10, 10],
+            width: 2
+        }),
+        image: new ol.style.Circle({
+            radius: 5,
+            stroke: new ol.style.Stroke({
+                color: 'rgba(255, 0, 0, 0.7)'
+            }),
+            fill: new ol.style.Fill({
+                color: 'rgba(255, 0, 0, 0.2)'
+            })
+        })
+    }),
+
     items: [
         {
             xtype: 'panel',
@@ -271,6 +295,17 @@ Ext.define('GeoXMap.tools.components.PointInfo', {
         const olResolution = olView.getResolution();
         const olProjection = olView.getProjection();
 
+
+        this.highlightOverlay = new ol.layer.Vector({
+            name: 'highlight query--',  // legend tree
+            style: me.highlightStyle,
+            source: new ol.source.Vector(),
+            map: olmap
+        });
+
+        olmap.addLayer(this.highlightOverlay);
+
+
         const projectionCode = parseInt(olProjection.getCode().split(':')[1]);
 
         const lonLatCoords = (projectionCode === 4326) ? projectionCode : extmap.transformCoordinates(coord, projectionCode, 4326);
@@ -280,6 +315,9 @@ Ext.define('GeoXMap.tools.components.PointInfo', {
         coordinateFields[2].setValue(lonLatCoords[1].toFixed(6));
 
         let layersData = [];
+        let layersGeom = [];
+
+        // this.highlightOverlay.getSource().clear();
 
         // The humanid and the visibile field keys to extract from the layers that intersect the clicked point
         const idKey = this.getIdKey();
@@ -360,6 +398,17 @@ Ext.define('GeoXMap.tools.components.PointInfo', {
 
                         const requestedfeatures = [];
 
+                        const h = features[0];
+
+                        h.style = me.highlightStyle;
+
+                        const f = {type: 'FeatureCollection', style: me.highlightStyle, features: [h]};
+
+                        f.style = me.highlightStyle;
+
+                        me.highlightOverlay.getSource().addFeatures(f);
+
+
                         // For each feature
                         features.forEach(function (feat) {
 
@@ -414,8 +463,6 @@ Ext.define('GeoXMap.tools.components.PointInfo', {
     },
 
     onToggleTool: function (scope, state) {
-
-        console.log("TOggle")
 
     }
 });

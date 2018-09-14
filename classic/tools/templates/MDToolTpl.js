@@ -37,6 +37,7 @@ Ext.define('GeoXMap.tools.templates.MDToolTpl', {
         const masterDetail = config.masterDetail;
 
         masterDetail['mapscope'] = config.mapscope;
+        masterDetail['header'] = false;
 
         this._mdWindow = Ext.create(masterDetail);
 
@@ -52,26 +53,8 @@ Ext.define('GeoXMap.tools.templates.MDToolTpl', {
     openWindow: function (params, stayopen) {
         const masterdetail = this.mapscope.getMasterDetail();
         const ctx = this._mdWindow;
-        // const mdxtype = this.masterDetail.xtype;
 
         let windowChange = masterdetail.replaceChildItem(ctx);
-
-        // if (masterdetail.getActiveChildId() !== mdxtype) {
-        //
-        //     masterdetail.replaceChildItem(ctx);
-
-            // const items = masterdetail.getRefItems();
-            //
-            // if (items.length > 1) {
-            //     masterdetail.remove(items[1], false);
-            // }
-            //
-            // masterdetail.add(ctx);
-            //
-            // masterdetail.activeId = mdxtype;
-
-            // windowChange = true;
-        // }
 
         if (ctx.onOpenWindow) {
             ctx.onOpenWindow(params);

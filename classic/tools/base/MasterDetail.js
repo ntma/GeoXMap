@@ -3,12 +3,14 @@ Ext.define('GeoXMap.tools.base.MasterDetail', {
 
     xtype: 'geo_masterdetail',
 
-    // header: false,
-    // hidden: true,
     draggable: false,
-    closable: true,
 
-    layout: 'fit',
+    header: false,
+
+    layout: {
+        type: 'vbox',//'fit'
+        align: 'stretch'
+    },
 
     userCls: 'map-panel',
 
@@ -18,7 +20,64 @@ Ext.define('GeoXMap.tools.base.MasterDetail', {
     _activeId: null,
 
     items: [
+        // Header
+        {
+            xtype: 'container',
+            layout: {
+                type: 'hbox',
+                align: 'stretch'
+            },
+            items: [
+                {
+                    xtype: 'container',
+                    layout: 'fit',
+                    items: [
+                        {
+                            xtype: 'button',
+                            iconCls: 'fa fa-arrow-left',
+                            flex: 1,
+                            userCls: 'map-btn',
+                            handler: function(){
+                                this.up('geo_masterdetail').backToCard();
+                            }
 
+                        }
+                    ]
+                },
+                {
+                    xtype: 'title',
+                    editable: false,
+                    text: 'Title',
+                    flex: 7,
+                    style: {
+                        textAlign: 'center'
+                    }
+                },
+                {
+                    xtype: 'button',
+                    iconCls: 'fa fa-times',
+                    userCls: 'map-btn',
+
+                    flex: 1,
+                    handler: function(){
+                        this.up('geo_masterdetail').close();
+                    }
+                }
+            ]
+        },
+
+        // Body
+        {
+            xtype: 'container',
+
+            flex:1,
+
+            layout: 'fit',
+
+            items: [
+
+            ]
+        }
     ],
 
     listeners: {
@@ -66,6 +125,31 @@ Ext.define('GeoXMap.tools.base.MasterDetail', {
         });
     },
 
+    navigateToCard: function(xtype){
+        const cardCmp = this.getRefItems()[1].down();
+
+        cardCmp.activateCard(xtype);
+
+        const goBackCtrl = this.getNavigationHeader().down('container');
+
+        goBackCtrl.show();
+    },
+
+    backToCard: function(){
+        const cardCmp = this.getRefItems()[1].down();
+
+        if(!cardCmp.backToCard()){
+            const goBackCtrl = this.getNavigationHeader().down('container');
+
+            goBackCtrl.hide();
+        }
+    },
+
+
+    getNavigationHeader: function(){
+        return this.down('container');
+    },
+
     getSlided: function(){
         return this.slided;
     },
@@ -74,12 +158,13 @@ Ext.define('GeoXMap.tools.base.MasterDetail', {
         return this._activeId;
     },
 
-    getInnerDetailCmp: function(){
-        return this.getRefItems()[1];
-    },
-
     setActiveChildId: function(id){
       this._activeId = id;
+    },
+
+    // Intentional override
+    setTitle: function(title){
+        this.down('container').down('title').setText(title);
     },
 
     /**
@@ -92,13 +177,23 @@ Ext.define('GeoXMap.tools.base.MasterDetail', {
 
     replaceChildItem: function(cmp){
 
-        if (this.getActiveChildId() !== cmp.xtype) {
+        const activeId = this.getActiveChildId();
+
+        if (activeId !== cmp.xtype) {
 
             this.removeChildItem();
+
+            this.setTitle(cmp.title);
 
             this.addChildItem(cmp);
 
             this.setActiveChildId(cmp.xtype);
+            
+            const goBackCtrl = this.getNavigationHeader().down('container');
+
+            if(!cmp.getQueueLength()){
+                goBackCtrl.hide();
+            }
 
             return true;
         } else {
@@ -111,18 +206,17 @@ Ext.define('GeoXMap.tools.base.MasterDetail', {
      * @param cmp
      */
     addChildItem: function(cmp){
-        this.add(cmp);
+        const md = this.getRefItems()[1];
+
+        md.add(cmp);
     },
 
     /**
      * Util to remove a child component
      */
     removeChildItem: function(){
+        const md = this.getRefItems()[1];
 
-        const items = this.getRefItems();
-
-        if (items.length > 1) {
-            this.remove(items[1], false);
-        }
+        md.remove(0, false);
     }
 });

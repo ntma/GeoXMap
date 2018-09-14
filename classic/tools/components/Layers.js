@@ -2,7 +2,7 @@
  * Based on: https://rawgit.com/geoext/geoext3/master/examples/tree/panel.js
  */
 Ext.define('GeoXMap.tools.components.Layers', {
-    extend: 'Ext.tree.Panel',
+    extend: 'GeoXMap.tools.base.MasterDetailCard',
     xtype: 'geo_layerspanel',
 
     requires: [
@@ -15,34 +15,42 @@ Ext.define('GeoXMap.tools.components.Layers', {
     //     }
     // },
 
+    title: 'Layers',
+
     border: false,
-    rootVisible: false,
-    // hideHeaders: true,
-    lines: false,
 
-    framed: false,
+    items: [
+        {
+            xtype: 'treepanel',
+            rootVisible: false,
+            // hideHeaders: true,
+            lines: false,
 
-    style: {
-        textAlign: 'left'
-    },
+            framed: false,
 
-    columns: {
-        items: [
-            {
-                xtype: 'treecolumn',
-                dataIndex: 'text',
-                flex: 1,
-                // ui: 'map-panel-profile1'
-                // plugins: [
-                //     {
-                //         ptype: 'basic_tree_column_legend'
-                //     }
-                // ]
-            }
-        ]
-    },
+            style: {
+                textAlign: 'left'
+            },
 
-    store: null, // To be a tree store
+            columns: {
+                items: [
+                    {
+                        xtype: 'treecolumn',
+                        dataIndex: 'text',
+                        flex: 1,
+                        // ui: 'map-panel-profile1'
+                        // plugins: [
+                        //     {
+                        //         ptype: 'basic_tree_column_legend'
+                        //     }
+                        // ]
+                    }
+                ]
+            },
+
+            store: null, // To be a tree store
+        }
+    ],
 
     constructor: function (config) {
 
@@ -76,6 +84,10 @@ Ext.define('GeoXMap.tools.components.Layers', {
             layerGroup: layerGroup
         });
 
-        this.setStore(store);
+        this.down().setStore(store);
+    },
+
+    getStore: function(){
+        return this.down().getStore();
     }
 });
