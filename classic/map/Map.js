@@ -58,4 +58,27 @@ Ext.define('GeoXMap.map.Map', {
         return code;
     },
 
+    extentToFeatures: function(features){
+        const map = this.getMap();
+        const mapView = map.getView();
+
+        let extent;
+
+        if(features instanceof ol.Feature){
+
+            extent = features.getGeometry().getExtent();
+
+            mapView.fit(extent, map.getSize());
+
+        } else if(features.getLength() > 0) {
+
+            const vector = new ol.source.Vector({
+                features: features
+            });
+
+            extent = vector.getExtent();
+
+            mapView.fit(extent, map.getSize());
+        }
+    }
 });
