@@ -23,6 +23,7 @@ Ext.define('GeoXMap.tools.base.MasterDetail', {
         // Header
         {
             xtype: 'container',
+            height: 50,
             layout: {
                 type: 'hbox',
                 align: 'stretch'
@@ -31,16 +32,16 @@ Ext.define('GeoXMap.tools.base.MasterDetail', {
                 {
                     xtype: 'container',
                     layout: 'fit',
+                    userCls: 'map-ctn',
+                    flex: 1,
                     items: [
                         {
                             xtype: 'button',
                             iconCls: 'fa fa-arrow-left',
-                            flex: 1,
                             userCls: 'map-btn',
                             handler: function(){
                                 this.up('geo_masterdetail').backToCard();
                             }
-
                         }
                     ]
                 },
@@ -131,7 +132,7 @@ Ext.define('GeoXMap.tools.base.MasterDetail', {
 
         cardCmp.activateCard(xtype);
 
-        const goBackCtrl = this.getNavigationHeader().down('container');
+        const goBackCtrl = this.getNavigationHeader().down('container').down('button');
 
         goBackCtrl.show();
     },
@@ -140,7 +141,7 @@ Ext.define('GeoXMap.tools.base.MasterDetail', {
         const cardCmp = this.getRefItems()[1].down();
 
         if(!cardCmp.backToCard()){
-            const goBackCtrl = this.getNavigationHeader().down('container');
+            const goBackCtrl = this.getNavigationHeader().down('container').down('button');
 
             goBackCtrl.hide();
         }
@@ -190,7 +191,7 @@ Ext.define('GeoXMap.tools.base.MasterDetail', {
 
             this.setActiveChildId(cmp.xtype);
             
-            const goBackCtrl = this.getNavigationHeader().down('container');
+            const goBackCtrl = this.getNavigationHeader().down('container').down('button');
 
             if(!cmp.getQueueLength()){
                 goBackCtrl.hide();
