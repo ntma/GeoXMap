@@ -46,6 +46,7 @@ Ext.define('GeoXMap.tools.base.MasterDetail', {
                 },
                 {
                     xtype: 'title',
+                    userCls: 'map-title',
                     editable: false,
                     text: 'Title',
                     flex: 7,
