@@ -130,7 +130,9 @@ Ext.define('GeoXMap.tools.base.MasterDetail', {
     navigateToCard: function(xtype){
         const cardCmp = this.getRefItems()[1].down();
 
-        cardCmp.activateCard(xtype);
+        const activedCmp = cardCmp.activateCard(xtype);
+
+        this.setTitle(activedCmp.title);
 
         const goBackCtrl = this.getNavigationHeader().down('container').down('button');
 
@@ -140,7 +142,11 @@ Ext.define('GeoXMap.tools.base.MasterDetail', {
     backToCard: function(){
         const cardCmp = this.getRefItems()[1].down();
 
-        if(!cardCmp.backToCard()){
+        const activedCmp = cardCmp.backToCard();
+
+        this.setTitle(activedCmp.title);
+
+        if(!cardCmp.getQueueLength()){
             const goBackCtrl = this.getNavigationHeader().down('container').down('button');
 
             goBackCtrl.hide();

@@ -26,14 +26,14 @@ Ext.define('GeoXMap.tools.base.MasterDetailCard', {
 
         this._backtracerQueue.push(curCard);
 
-        cardLayout.setActiveItem(nextCard);
+        return cardLayout.setActiveItem(nextCard);
     },
 
     backToCard: function () {
         const prevCard = this._backtracerQueue.pop();
 
-        this.getLayout().setActiveItem(prevCard);
+        return this.getLayout().setActiveItem(prevCard);
 
-        return !!this._backtracerQueue.length;
+        // return !!this._backtracerQueue.length;
     }
 });
