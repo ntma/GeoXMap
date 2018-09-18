@@ -201,6 +201,8 @@ Ext.define('GeoXMap.tools.base.MasterDetail', {
 
             if(!cmp.getQueueLength()){
                 goBackCtrl.hide();
+            } else {
+                goBackCtrl.show();
             }
 
             return true;

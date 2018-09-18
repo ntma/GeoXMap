@@ -5,7 +5,9 @@ Ext.define('GeoXMap.tools.base.MasterDetailCard', {
 
     title: 'Title',
 
-    _backtracerQueue: [],
+    config: {
+        _backtracerQueue: [],
+    },
 
     layout: {
         type: 'card',
@@ -15,7 +17,7 @@ Ext.define('GeoXMap.tools.base.MasterDetailCard', {
     items: [],
 
     getQueueLength: function(){
-        return this._backtracerQueue.length;
+        return this.getConfig('_backtracerQueue').length;
     },
 
     activateCard: function(nextCard){
@@ -24,13 +26,13 @@ Ext.define('GeoXMap.tools.base.MasterDetailCard', {
 
         const curCard = cardLayout.getActiveItem();
 
-        this._backtracerQueue.push(curCard);
+        this.getConfig('_backtracerQueue').push(curCard);
 
         return cardLayout.setActiveItem(nextCard);
     },
 
     backToCard: function () {
-        const prevCard = this._backtracerQueue.pop();
+        const prevCard = this.getConfig('_backtracerQueue').pop();
 
         return this.getLayout().setActiveItem(prevCard);
 
