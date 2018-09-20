@@ -22,7 +22,12 @@ Ext.define('GeoXMap.tools.components.Layers', {
     items: [
         {
             xtype: 'treepanel',
+
             rootVisible: false,
+
+            viewConfig: {
+                plugins: {ptype: 'treeviewdragdrop'}
+            },
             // hideHeaders: true,
             lines: false,
 
