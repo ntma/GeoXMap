@@ -144,6 +144,10 @@ Ext.define('GeoXMap.tools.base.MasterDetail', {
 
         const activedCmp = cardCmp.backToCard();
 
+        if(!activedCmp){
+            return null;
+        }
+
         this.setTitle(activedCmp.title);
 
         if(!cardCmp.getQueueLength()){
@@ -151,6 +155,8 @@ Ext.define('GeoXMap.tools.base.MasterDetail', {
 
             goBackCtrl.hide();
         }
+
+        return activedCmp;
     },
 
 

@@ -32,10 +32,17 @@ Ext.define('GeoXMap.tools.base.MasterDetailCard', {
     },
 
     backToCard: function () {
-        const prevCard = this.getConfig('_backtracerQueue').pop();
+        const queue = this.getConfig('_backtracerQueue');
 
-        return this.getLayout().setActiveItem(prevCard);
+        const prevCard = queue[queue.length -1];
 
+        const activatedItem = this.getLayout().setActiveItem(prevCard);
+
+        if(activatedItem){
+            queue.pop();
+        }
+
+        return activatedItem;
         // return !!this._backtracerQueue.length;
     }
 });
