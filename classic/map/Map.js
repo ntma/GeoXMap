@@ -58,9 +58,10 @@ Ext.define('GeoXMap.map.Map', {
         return code;
     },
 
-    extentToFeatures: function(features){
+    extentToFeatures: function(features, maxZoom){
         const map = this.getMap();
         const mapView = map.getView();
+        const params = (maxZoom) ? {size: map.getSize(), maxZoom: maxZoom} : {size: map.getSize()};
 
         let extent;
 
@@ -68,7 +69,7 @@ Ext.define('GeoXMap.map.Map', {
 
             extent = features.getGeometry().getExtent();
 
-            mapView.fit(extent, map.getSize());
+            mapView.fit(extent, params);
 
         } else if(features.getLength() > 0) {
 
@@ -78,7 +79,7 @@ Ext.define('GeoXMap.map.Map', {
 
             extent = vector.getExtent();
 
-            mapView.fit(extent, map.getSize());
+            mapView.fit(extent, params);
         }
     }
 });
