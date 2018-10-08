@@ -6,7 +6,8 @@ Ext.define('GeoXMap.tools.components.Layers', {
     xtype: 'geo_layerspanel',
 
     requires: [
-        'GeoExt.data.store.LayersTree'
+        'GeoExt.data.store.LayersTree',
+        'GeoXMap.tools.plugins.BasicTreeColumnLegends'
     ],
 
     // viewConfig: {
@@ -43,12 +44,11 @@ Ext.define('GeoXMap.tools.components.Layers', {
                         xtype: 'treecolumn',
                         dataIndex: 'text',
                         flex: 1,
-                        // ui: 'map-panel-profile1'
-                        // plugins: [
-                        //     {
-                        //         ptype: 'basic_tree_column_legend'
-                        //     }
-                        // ]
+                        plugins: [
+                            {
+                                ptype: 'basic_tree_column_legend'
+                            }
+                        ]
                     }
                 ]
             },
