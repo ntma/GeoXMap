@@ -47,6 +47,11 @@
   background: var(--map-base-color) !important;
 }
 
+.map-filefield .x-btn {
+  background: var(--map-base-color);
+  border-color: var(--map-base-color);
+}
+
 .map-tool-container {
   z-index: 1 !important;
 }
