@@ -5,12 +5,14 @@
   --map-base-color: #693D3D;
   --map-hover-color: #BA5536;
   --map-pressed-color: #46211A;
+  --map-attr-color: rgba(0,60,136,.3);//rgba(204, 204, 179, 0.6);
 }
 
 /* Map button rules */
 .map-btn {
   background: var(--map-base-color);
   border-color: var(--map-base-color);
+  font-size: 16px !important;
 }
 
 .map-btn-left {
@@ -133,4 +135,17 @@
 .map-tab-bar .x-tab-bar {
   color: black;
   background-color: var(--map-base-color);
+}
+
+.map-attributions-wrapper {
+  z-index: 1 !important;
+}
+
+.map-attributions {
+  background-color: var(--map-attr-color);
+  border-radius: 5%;
+  padding-left: 5px;
+}
+.map-attributions .x-panel-body {
+  background-color: transparent;
 }

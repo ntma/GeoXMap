@@ -4,7 +4,7 @@ Ext.define('GeoXMap.map.Map', {
 
     map: new ol.Map({
         layers: [],
-        controls: [],
+        controls: [new ol.control.ScaleLine()],
         view: new ol.View()
     }),
 

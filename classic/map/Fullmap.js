@@ -468,8 +468,69 @@ Ext.define('GeoXMap.map.Fullmap', {
 
                     const wrapper = Ext.create(t);
 
-                    wrapper.on('afterrender', function () {
-                        wrapper.anchorTo(me, 'tl-tl', pos);
+                    // TODO: need refactor this event handler
+                    me.on('resize', function(){
+
+                        switch(wrapper.posAnchorX){
+                            case 'right':
+                                wrapper.pos[0] = me.getWidth() - wrapper.getWidth();
+                                break;
+                            case 'center':
+                                wrapper.pos[0] = Math.floor(me.getWidth() / 2.0);
+                                break;
+                            case 'left':
+                                wrapper.pos[0] = 0;
+                                break;
+                        }
+
+                        switch(wrapper.posAnchorY){
+                            case 'down':
+                                wrapper.pos[1] = me.getHeight() - wrapper.getHeight();
+                                break;
+                            case 'center':
+                                wrapper.pos[1] = Math.floor(me.getHeight() / 2.0);
+                                break;
+                            case 'top':
+                                wrapper.pos[1] = 0;
+                                break;
+                        }
+
+                        if(wrapper.rendered){
+                            wrapper.anchorTo(me, 'tl-tl', wrapper.pos);
+                        }
+                    });
+
+                    wrapper.on(event, function () {
+
+                        const p = pos;
+
+                        switch(wrapper.posAnchorX){
+                            case 'right':
+                                p[0] = me.getWidth() - wrapper.getWidth();
+                                break;
+                            case 'center':
+                                p[0] = Math.floor(me.getWidth() / 2.0) - wrapper.getWidth() / 2.0;
+                                break;
+                            case 'left':
+                                p[0] = 0;
+                                break;
+                        }
+
+                        switch(wrapper.posAnchorY){
+                            case 'down':
+                                p[1] = me.getHeight() - wrapper.getHeight();
+                                break;
+                            case 'center':
+                                p[1] = Math.floor(me.getHeight() / 2.0);
+                                break;
+                            case 'top':
+                                p[1] = 0;
+                                break;
+                        }
+
+                        wrapper.pos = pos;
+
+                        wrapper.anchorTo(me, 'tl-tl', p);
                     });
 
                     wrapper.render(mapEl);
