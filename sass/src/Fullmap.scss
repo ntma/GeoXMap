@@ -1,57 +1,77 @@
 /**
   Color rules for map components
  */
+//https://material.io/tools/color/#!/?view.left=0&view.right=0&primary.color=455A64&secondary.color=004D40
 :root {
   --map-base-color: #693D3D;
   --map-hover-color: #BA5536;
   --map-pressed-color: #46211A;
   --map-attr-color: rgba(0,60,136,.3);//rgba(204, 204, 179, 0.6);
+
+  --primary-main: #455a64;
+  --primary-light: #718792;
+  --primary-dark: #1c313a;
+
+  --secondary-main: #006064;
+  --secondary-light: #428e92;
+  --secondary-dark: #00363a;
+
+  --text-color-primary: white;
+  --text-color-secondary: black;
+}
+
+.panel-btn {
+  background: var(--primary-main);
+  border-color: var(--primary-main);//var(--map-base-color);
+  font-size: 16px !important;
+}
+
+.panel-btn.x-btn-pressed {
+  background: var(--primary-dark) !important;
+  border-color: var(--secondary-dark) !important;
+}
+
+.panel-btn.x-btn-over {
+  background: var(--primary-light);
+  border-color: var(--primary-light);
+}
+
+.panel-btn.x-btn-focus {
+  background-color: var(--primary-main);
+}
+
+.panel-btn.x-btn-disabled {
+  background: var(--primary-main) !important;
 }
 
 /* Map button rules */
 .map-btn {
-  background: var(--map-base-color);
-  border-color: var(--map-base-color);
+  background: var(--secondary-main);
+  border-color: var(--secondary-main);//var(--map-base-color);
   font-size: 16px !important;
 }
 
-.map-btn-left {
-  border-radius: 0 10px 10px 0 !important;
-}
-
-.map-btn-right {
-  border-radius: 10px 0 0 10px !important
-}
-
-.map-btn-top {
-  border-radius: 0 0 10px 10px !important
-}
-
-.map-btn-down {
-  border-radius: 10px 10px 0 0 !important
-}
-
 .map-btn.x-btn-pressed {
-  background: var(--map-pressed-color) !important;
-  border-color: var(--map-base-color) !important;
+  background: var(--secondary-dark) !important;
+  border-color: var(--secondary-dark) !important;
 }
 
 .map-btn.x-btn-over {
-  background: var(--map-hover-color);
-  border-color: var(--map-base-color);
+  background: var(--secondary-light);
+  border-color: var(--secondary-light);
 }
 
 .map-btn.x-btn-focus {
-  background-color: var(--map-base-color);
+  background-color: var(--secondary-main);
 }
 
 .map-btn.x-btn-disabled {
-  background: var(--map-base-color) !important;
+  background: var(--secondary-main) !important;
 }
 
 .map-filefield .x-btn {
-  background: var(--map-base-color);
-  border-color: var(--map-base-color);
+  background: var(--secondary-main);
+  border-color: var(--secondary-main);
 }
 
 .map-tool-container {
@@ -64,16 +84,16 @@
 
 /* Map panel rules */
 .map-panel {
-  border-color: var(--map-base-color);
+  border-color: var(--primary-main);
 }
 
 .map-panel > .x-panel-header {
-  background: var(--map-base-color);
-  border-color: var(--map-base-color);
+  background: var(--primary-main);
+  border-color: var(--primary-main);
 }
 
 .map-panel > .x-panel-header.x-panel-header-default .x-tool-img {
-  background: var(--map-base-color);
+  background: var(--primary-main);
 }
 
 /**
@@ -99,16 +119,16 @@
 
 /* Map window rules */
 .map-window {
-  border-color: var(--map-base-color);
+  border-color: var(--primary-main);
 }
 
 .map-window > .x-window-header {
-  background: var(--map-base-color);
-  border-color: var(--map-base-color);
+  background: var(--primary-main);
+  border-color: var(--primary-main);
 }
 
 .map-window > .x-window-header.x-window-header-default .x-tool-img {
-  background: var(--map-base-color);
+  background: var(--primary-main);
 }
 
 /* Map tree panel (layers) */
@@ -120,21 +140,23 @@
 
 /* X Progress Bar */
 .map-progress-bar > .x-progress-bar {
-  background-color: var(--map-base-color);
+  background-color: var(--primary-main);
 }
 
 .map-title.x-title {
-  color: #f0f0f0;
-  background-color: var(--map-base-color);
+  color: var(--text-color-primary);
+  background-color: var(--primary-main);
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .map-ctn.x-container {
-  background-color: var(--map-base-color);
+  background-color: var(--primary-main);
 }
 
 .map-tab-bar .x-tab-bar {
   color: black;
-  background-color: var(--map-base-color);
+  background-color: var(--primary-main);
 }
 
 .map-attributions-wrapper {
@@ -144,8 +166,32 @@
 .map-attributions {
   background-color: var(--map-attr-color);
   border-radius: 5%;
-  padding-left: 5px;
+  margin-left: 5px;
+  margin-right: 10px;
+  display: inline-block;
+  padding: 4px;
 }
 .map-attributions .x-panel-body {
   background-color: transparent;
+}
+
+.msg-box {
+  border: 1px solid var(--primary-main);
+}
+
+.msg-box .x-header {
+  border: 1px solid var(--primary-main);
+
+  color: var(--text-color-primary);
+  background-color: var(--primary-main);
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.msg-box > .x-window-header-default .x-tool-img {
+  background-color: var(--primary-main);
+}
+
+.msg-box .x-btn {
+  @extend .map-btn;
 }

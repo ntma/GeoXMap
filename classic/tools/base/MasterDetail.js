@@ -38,7 +38,7 @@ Ext.define('GeoXMap.tools.base.MasterDetail', {
                         {
                             xtype: 'button',
                             iconCls: 'fa fa-arrow-left',
-                            userCls: 'map-btn',
+                            userCls: 'panel-btn',
                             handler: function(){
                                 this.up('geo_masterdetail').backToCard();
                             }
@@ -58,8 +58,7 @@ Ext.define('GeoXMap.tools.base.MasterDetail', {
                 {
                     xtype: 'button',
                     iconCls: 'fa fa-times',
-                    userCls: 'map-btn',
-
+                    userCls: 'panel-btn',
                     flex: 1,
                     handler: function(){
                         this.up('geo_masterdetail').close();

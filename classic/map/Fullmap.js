@@ -242,9 +242,8 @@ Ext.define('GeoXMap.map.Fullmap', {
                         },
 
                         defaults: {
-                            style: buttonCSS,
+                            margin: (side === 'right') ? '10px 0 0 0' : '0 0 10px 0',
                             side: side,
-                            // ui: 'map-tool-' + colorPalette,
                             userCls: 'map-btn map-btn-' + side,
 
                             focusable: false,

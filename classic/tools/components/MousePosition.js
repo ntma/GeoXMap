@@ -8,13 +8,15 @@ Ext.define('GeoXMap.tools.components.MousePosition', {
 
     html: '',
 
+    preserveProjection: false,
+
     constructor: function (config) {
 
         this.callParent([config]);
 
         const me = this;
 
-        this.templateHtml = new Ext.Template('<div>{lat}, {lon}</div>');
+        this.templateHtml = new Ext.Template('<div>EPSG {code}: {lat}, {lon}</div>');
 
         const mapscope = config.mapscope,
             map = mapscope.getOlMap();
@@ -36,12 +38,15 @@ Ext.define('GeoXMap.tools.components.MousePosition', {
             let coordinate = olmap.getCoordinateFromPixel(pixel);
 
             const projectionCode = map.getProjectionCode();
+            let outputCode = projectionCode;
 
-            if(projectionCode !== 4326){
+            if(projectionCode !== 4326 && !me.preserveProjection){
                 coordinate = map.transformCoordinates(coordinate, projectionCode, 4326);
+
+                outputCode = 4326;
             }
 
-            me.showCoordinate(coordinate);
+            me.showCoordinate(coordinate, outputCode);
         });
 
         viewport.addEventListener('mouseout', function(evt){
@@ -49,11 +54,12 @@ Ext.define('GeoXMap.tools.components.MousePosition', {
         });
     },
 
-    showCoordinate: function(coordinate){
+    showCoordinate: function(coordinate, code){
         let html = '';
 
         if(coordinate){
             html = this.templateHtml.apply({
+                code: code,
                 lat: coordinate[0].toFixed(3),
                 lon: coordinate[1].toFixed(3)
             });
