@@ -17,6 +17,10 @@ Ext.define('GeoXMap.tools.components.Search', {
 
     width: 200,
 
+    userCls: 'underlay-z-index',
+
+    shadow: false,
+
     constructor: function (config) {
         this.callParent([config]);
 

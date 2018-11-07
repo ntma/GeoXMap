@@ -10,6 +10,10 @@ Ext.define('GeoXMap.tools.components.MousePosition', {
 
     preserveProjection: false,
 
+    userCls: 'underlay-z-index',
+
+    shadow: false,
+
     constructor: function (config) {
 
         this.callParent([config]);

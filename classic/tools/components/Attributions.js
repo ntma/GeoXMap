@@ -4,7 +4,7 @@ Ext.define('GeoXMap.tools.components.Attributions', {
 
     height:40,
 
-    userCls: 'map-attributions-wrapper',
+    userCls: 'underlay-z-index',
 
     shadow: false,
 
