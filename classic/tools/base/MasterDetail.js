@@ -12,7 +12,7 @@ Ext.define('GeoXMap.tools.base.MasterDetail', {
         align: 'stretch'
     },
 
-    userCls: 'map-panel',
+    userCls: 'map-panel clickable',
 
     slided: true,
 

@@ -51,6 +51,12 @@
   font-size: 16px !important;
 }
 
+/* For the inner text of buttons*/
+.map-btn .x-btn-inner {
+  font-weight: bold;
+  font-size: 16px !important;
+}
+
 .map-btn.x-btn-pressed {
   background: var(--secondary-dark) !important;
   border-color: var(--secondary-dark) !important;
@@ -164,13 +170,25 @@
 }
 
 .map-attributions {
+  margin-right: 10px;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   background-color: var(--map-attr-color);
   border-radius: 5%;
-  margin-left: 5px;
-  margin-right: 10px;
-  display: inline-block;
   padding: 4px;
+
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
 }
+
+.map-attributions-text {
+  display: inline;
+}
+
 .map-attributions .x-panel-body {
   background-color: transparent;
 }
@@ -194,4 +212,14 @@
 
 .msg-box .x-btn {
   @extend .map-btn;
+}
+
+/* Prevent tool panels from catching clicks */
+/* TODO: find a better solution... */
+.unclickable {
+  pointer-events: none;
+}
+
+.clickable {
+  pointer-events: all;
 }

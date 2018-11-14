@@ -11,7 +11,7 @@ Ext.define('GeoXMap.tools.base.ToolPanel', {
 
     shadow: false,
 
-    userCls: 'map-tool-container',
+    userCls: 'map-tool-container unclickable',
 
     listeners: {
         afterlayout: function(){

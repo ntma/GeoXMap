@@ -4,14 +4,14 @@ Ext.define('GeoXMap.tools.components.Attributions', {
 
     height:40,
 
-    userCls: 'underlay-z-index',
+    userCls: 'map-attributions-wrapper underlay-z-index',
 
     shadow: false,
 
     style: {
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'right'
     },
 
     layout: 'fit',
@@ -24,17 +24,17 @@ Ext.define('GeoXMap.tools.components.Attributions', {
 
         this.templateHtml = new Ext.Template(
             '<div class="map-attributions" style="" >' +
-                '{prefix} <a href="{url}">{link}</a> {suffix}' +
+            '<div class="map-attributions-text"> {prefix} <a href="{url}">{link}</a> {suffix}' + // </div> <a class="map-attributions-icon"> i </a>' +
             '</div>'
         );
 
-            me.show({suffix: me.suffix, url: me.url, link: me.link, prefix: me.prefix});
+        me.show({suffix: me.suffix, url: me.turl, link: me.link, prefix: me.prefix});
     },
 
-    show: function(values){
+    show: function (values) {
         let html = '';
 
-        if(values){
+        if (values) {
             html = this.templateHtml.apply({
                 prefix: values.prefix,
                 url: values.url,

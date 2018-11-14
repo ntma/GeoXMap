@@ -244,7 +244,7 @@ Ext.define('GeoXMap.map.Fullmap', {
                         defaults: {
                             margin: (side === 'right') ? '10px 0 0 0' : '0 0 10px 0',
                             side: side,
-                            userCls: 'map-btn',
+                            userCls: 'map-btn clickable',
 
                             focusable: false,
 
@@ -283,7 +283,7 @@ Ext.define('GeoXMap.map.Fullmap', {
                     toolPanel.add(md);
                 }
 
-                toolPanel['userCls'] = 'map-tool-container-detail';
+                toolPanel['userCls'] = 'map-tool-container-detail unclickable';
 
                 this._masterdetail = md;
             }
