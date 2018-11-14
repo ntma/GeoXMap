@@ -80,6 +80,7 @@ Ext.define('GeoXMap.map.Fullmap', {
      */
     _rawLayers: null,
 
+    autoHeight: true,
 
     layout: 'fit',
 
@@ -91,6 +92,11 @@ Ext.define('GeoXMap.map.Fullmap', {
 
     constructor: function (config) {
         this.callParent([config]);
+
+        /**
+         * Setup auto height adjustment on parent resize
+         */
+        this.setupAutoMapHeight();
 
         /**
          * Layers Store
@@ -175,6 +181,47 @@ Ext.define('GeoXMap.map.Fullmap', {
             projection = view.projection;
 
         this.getMap().setMapView(center, zoom, 'EPSG:' + projection);
+    },
+
+    setupAutoMapHeight: function(){
+
+        if(!this.autoHeight){
+            return;
+        }
+
+        const parentCmp = this.up(),
+            map = this.getMap();
+
+        if(parentCmp){
+            const padding = parentCmp.padding;
+
+            // Account for padding, since it affects the internal height of the parentCmp
+            let rawPadding = 0;
+
+            if(typeof padding === 'string'){
+                let tdPadding = padding.match(/\d+/g);
+
+                rawPadding = parseInt(tdPadding[0]) + parseInt(tdPadding[2]);
+
+            } else if(Number.isInteger(padding)){
+                rawPadding = 2 * padding;
+            }
+
+            // TODO: unregister this
+            parentCmp.on('resize', function (cmp, width ,height, oldWidth, oldHeight) {
+
+                if(height !== oldHeight){
+
+                    const parentCmpHeader = (parentCmp.getHeader) ? parentCmp.getHeader() : null;
+
+                    const headerHeight = (parentCmpHeader) ? parentCmpHeader.getHeight() : 0;
+
+                    const totalHeight = height - headerHeight - rawPadding;
+
+                    map.setHeight(totalHeight);
+                }
+            });
+        }
     },
 
     /**
