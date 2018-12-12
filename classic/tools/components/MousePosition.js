@@ -23,38 +23,25 @@ Ext.define('GeoXMap.tools.components.MousePosition', {
         this.templateHtml = new Ext.Template('<div>EPSG {code}: {lat}, {lon}</div>');
 
         const mapscope = config.mapscope,
-            map = mapscope.getOlMap();
+            map = mapscope.getOlMap(),
+            mapViewport = map.getViewport();
+
+        const onMouseMove = function(evt){
+            me.onMouseMove(evt);
+        };
+
+        const onMouseOut = function(evt){
+            me.onMouseOut(evt);
+        };
 
         mapscope.on('afterloadlayers', function(){
-            me.setupControl(map.getViewport());
-        });
-    },
-
-    setupControl: function(viewport){
-
-        const me = this;
-        const olmap = this.mapscope.getOlMap();
-        const map = this.mapscope.getMap();
-
-        viewport.addEventListener('mousemove', function(evt){
-            const pixel = olmap.getEventPixel(evt)
-
-            let coordinate = olmap.getCoordinateFromPixel(pixel);
-
-            const projectionCode = map.getProjectionCode();
-            let outputCode = projectionCode;
-
-            if(projectionCode !== 4326 && !me.preserveProjection){
-                coordinate = map.transformCoordinates(coordinate, projectionCode, 4326);
-
-                outputCode = 4326;
-            }
-
-            me.showCoordinate(coordinate, outputCode);
+            mapViewport.addEventListener('mousemove', onMouseMove);
+            mapViewport.addEventListener('mouseout', onMouseOut);
         });
 
-        viewport.addEventListener('mouseout', function(evt){
-            me.showCoordinate(null);
+        this.on('beforedestroy', function(){
+            mapViewport.removeEventListener('mousemove',onMouseMove);
+            mapViewport.removeEventListener('mouseout', onMouseOut);
         });
     },
 
@@ -70,5 +57,29 @@ Ext.define('GeoXMap.tools.components.MousePosition', {
         }
 
         this.setHtml(html);
+    },
+
+    onMouseMove: function(evt){
+        const map = this.mapscope.getMap(),
+            olmap = this.mapscope.getOlMap();
+
+        const pixel = olmap.getEventPixel(evt)
+
+        let coordinate = olmap.getCoordinateFromPixel(pixel);
+
+        const projectionCode = map.getProjectionCode();
+        let outputCode = projectionCode;
+
+        if(projectionCode !== 4326 && !this.preserveProjection){
+            coordinate = map.transformCoordinates(coordinate, projectionCode, 4326);
+
+            outputCode = 4326;
+        }
+
+        this.showCoordinate(coordinate, outputCode);
+    },
+
+    onMouseOut: function(evt){
+        this.showCoordinate(null);
     }
 });

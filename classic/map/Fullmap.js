@@ -64,6 +64,11 @@ Ext.define('GeoXMap.map.Fullmap', {
     _bottom: null,
 
     /**
+     * Custom tools reference
+     */
+    _custom: [],
+
+    /**
      * Reference to custom tools (i.e. nominatim search)
      * TODO: To be removed in future release
      */
@@ -579,6 +584,9 @@ Ext.define('GeoXMap.map.Fullmap', {
                         wrapper.anchorTo(me, 'tl-tl', p);
                     });
 
+                    // Store the reference, so we can destroy it later
+                    me._custom.push(wrapper);
+
                     wrapper.render(mapEl);
 
                 } else {
@@ -604,6 +612,14 @@ Ext.define('GeoXMap.map.Fullmap', {
 
         if (this._bottom) {
             this._bottom.destroy();
+        }
+
+        if(this._custom.length){
+            const customTools = this._custom;
+
+            for(let key in customTools){
+                customTools[key].destroy();
+            }
         }
     }
 });
