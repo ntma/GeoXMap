@@ -27,20 +27,21 @@ Ext.define('GeoXMap.tools.components.Search', {
         this.fromEpsg = config.params.fromEpsg;
         this.toEpsg = config.params.toEpsg;
 
-        if(config.params.url){
+        this.zoom = (config.params.zoom) ? config.params.zoom : 16;
+        this.duration = (config.params.duration) ? config.params.duration : 1000;
 
-            const nominatimStore = this.createNominatimStore(config.params.url);
+        const nominatimStore = (config.params.url) ? this.createUrlNominatimStore(config.params.url) :
+                                                     this.createCustomNominatimStore(config.params.model);
 
-            // Setup store
-            this.setStore(nominatimStore);
-        }
+        // Setup store
+        this.setStore(nominatimStore);
 
         // Setup Layer
         this.setupLayer();
     },
 
     // Creates required layer and adds it to the olmap
-    setupLayer: function(){
+    setupLayer: function () {
         const nominatimLayer = new ol.layer.Vector({
             name: 'nominatim--',
             source: new ol.source.Vector({})
@@ -51,7 +52,7 @@ Ext.define('GeoXMap.tools.components.Search', {
         this.nominatimLayer = nominatimLayer;
     },
 
-    createNominatimStore: function(nominatimUrl){
+    createUrlNominatimStore: function (nominatimUrl) {
 
         const nominatimStore = Ext.create('Ext.data.Store', {
             fields: [{
@@ -59,13 +60,13 @@ Ext.define('GeoXMap.tools.components.Search', {
                 mapping: "display_name"
             }, {
                 name: "bounds",
-                convert: function(v, rec) {
+                convert: function (v, rec) {
                     const bbox = rec.get('boundingbox');
                     return [bbox[2], bbox[0], bbox[3], bbox[1]];
                 }
             }, {
                 name: "lonlat",
-                convert: function(v, rec) {
+                convert: function (v, rec) {
                     return [rec.get('lon'), rec.get('lat')];
                 }
             }],
@@ -76,6 +77,15 @@ Ext.define('GeoXMap.tools.components.Search', {
                     type: 'json'
                 }
             }
+        });
+
+        return nominatimStore;
+    },
+
+    createCustomNominatimStore: function (nominatimModel) {
+
+        const nominatimStore = Ext.create('Ext.data.Store', {
+            model: nominatimModel
         });
 
         return nominatimStore;
@@ -100,16 +110,16 @@ Ext.define('GeoXMap.tools.components.Search', {
             // const geoMarker = new ol.Feature({
             //     geometry: new ol.geom.Point(position)
             // });
-
+            //
             // vectorLayer.getSource().addFeature(geoMarker);
 
-            map.animateToPoint(position, -1, 1000);
+            map.animateToPoint(position, this.zoom, this.duration);
         }
     },
 
     listeners: {
-        change: function(combo, value){
-            this.onSearch(combo,value)
+        change: function (combo, value) {
+            this.onSearch(combo, value)
         }
     }
 });

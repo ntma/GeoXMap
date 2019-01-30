@@ -37,15 +37,22 @@ Ext.define('GeoXMap.map.Map', {
     },
 
     animateToPoint: function(position, zoomLvl, duration){
-        // TODO: animate to point
-
         const mapView = this.getMap().getView();
-        // const pan = ol.animation.pan({
-        //     duration: duration,
-        //     source: mapView.getCenter()
-        // });
-        // olMap.beforeRender(pan);
-        mapView.setCenter(position);
+
+        if(!duration){
+            mapView.setCenter(position);
+        } else {
+            let animation = {
+                center: position,
+                duration: duration
+            };
+
+            if(zoomLvl && zoomLvl >= 0){
+                animation['zoom'] = zoomLvl;
+            }
+
+            mapView.animate(animation);
+        }
     },
 
     getProjectionCode: function () {
