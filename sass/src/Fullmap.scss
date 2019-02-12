@@ -20,6 +20,22 @@
   --text-color-secondary: black;
 }
 
+/* Header Panel */
+.map-header {
+  background: #4f6873;
+}
+
+.map-header-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+}
+
+.map-header-ctrl {
+  border-color: white;
+  border-radius: 10px;
+}
+
 .panel-btn {
   background: var(--primary-main);
   border-color: var(--primary-main);//var(--map-base-color);

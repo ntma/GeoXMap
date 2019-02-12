@@ -15,7 +15,9 @@ Ext.define('GeoXMap.tools.components.Search', {
 
     hideTrigger: true,
 
-    width: 200,
+    width: 300,
+
+    pos: [70, 20],
 
     userCls: 'underlay-z-index',
 

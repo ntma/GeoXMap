@@ -87,8 +87,6 @@ Ext.define('GeoXMap.map.Fullmap', {
 
     autoHeight: true,
 
-    layout: 'fit',
-
     items: [
         {
             xtype: 'geo_map'
@@ -110,6 +108,24 @@ Ext.define('GeoXMap.map.Fullmap', {
         // this.store = null
 
         /**
+         * Header
+         */
+        if(this.title || config.headerTools){
+
+            this.header = false;
+
+            const header = this.createHeaderPanel(this.title, config.headerTools);
+
+            this.insert(0, header);
+
+            this.headerHeight = header.height;
+
+            this.headerPanel = header;
+        } else {
+            this.headerHeight = 0;
+        }
+
+        /**
          * Map Tools
          */
         const tools = config.tools;
@@ -129,12 +145,6 @@ Ext.define('GeoXMap.map.Fullmap', {
 
             this._bottom = bottomPanel;
             this._top = topPanel;
-
-            const colors = tools.css.colors;
-
-            if(colors){
-                this.setColorProfile(colors);
-            }
         }
     },
 
@@ -195,7 +205,8 @@ Ext.define('GeoXMap.map.Fullmap', {
         }
 
         const parentCmp = this.up(),
-            map = this.getMap();
+            map = this.getMap(),
+            me = this;
 
         if(parentCmp){
             const padding = parentCmp.padding;
@@ -221,7 +232,7 @@ Ext.define('GeoXMap.map.Fullmap', {
 
                     const headerHeight = (parentCmpHeader) ? parentCmpHeader.getHeight() : 0;
 
-                    const totalHeight = height - headerHeight - rawPadding;
+                    const totalHeight = height - headerHeight - rawPadding - me.headerHeight;
 
                     map.setHeight(totalHeight);
                 }
@@ -255,6 +266,24 @@ Ext.define('GeoXMap.map.Fullmap', {
     /**
      * AUX
      */
+    createHeaderPanel: function(title, headerTools){
+        const header = Ext.create({
+            xtype: 'geo_headerpanel'
+        });
+
+        header.setTitle(title);
+
+        for(let idx in headerTools){
+            const tool = headerTools[idx];
+
+            tool['mapscope'] = this;
+
+            header.addTool(Ext.create(tool));
+        }
+
+        return header;
+    },
+
     createToolsPanel(tools, layout, alignment, side) {
 
         if(!tools){
@@ -264,14 +293,6 @@ Ext.define('GeoXMap.map.Fullmap', {
         let toolPanel = null;
 
         if (tools.length > 0) {
-            const buttonSize = this.tools.css.all.width;//'40px';//'40px';
-            // const colorPalette = this.tools.css.all.colorPalette;
-
-            const allCSS = this.tools.css.all;
-            const specificCSS = this.tools.css[side];
-
-            let buttonCSS = Object.assign({}, allCSS, specificCSS);
-
             const me = this;
 
             toolPanel = Ext.create({
@@ -294,7 +315,7 @@ Ext.define('GeoXMap.map.Fullmap', {
                         },
 
                         defaults: {
-                            margin: (side === 'right') ? '10px 0 0 0' : '0 0 10px 0',
+                            margin: (side === 'right') ? '0 0 20px 0' : '20px 0 0 0',
                             side: side,
                             userCls: 'map-btn clickable',
 
@@ -303,16 +324,16 @@ Ext.define('GeoXMap.map.Fullmap', {
                             plugins: 'responsive',
                             responsiveConfig: {
                                 'width <= 768': {
-                                    width: buttonSize,
-                                    height: buttonSize
+                                    width: 40,
+                                    height: 40
                                 },
                                 'width > 768 && width <= 1080': {
-                                    width: buttonSize + 5,
-                                    height: buttonSize + 5
+                                    width: 45,
+                                    height: 45
                                 },
                                 'width > 1080': {
-                                    width: buttonSize + 10,
-                                    height: buttonSize + 10
+                                    width: 50,
+                                    height: 50
                                 },
                             },
                             mapscope: me
@@ -404,13 +425,15 @@ Ext.define('GeoXMap.map.Fullmap', {
         let lw = 0,
             rw = 0;
 
+        const offsetH = h - this.headerHeight;
+
         if (this._left) {
-            this._left.setHeight(h);
+            this._left.setHeight(offsetH);
             lw = this._left.getWidth();
         }
 
         if (this._right) {
-            this._right.setHeight(h);
+            this._right.setHeight(offsetH);
 
             // TODO: masterdetail will be dynamic in side. THis has to be too
             if(this._masterdetail){
@@ -466,9 +489,11 @@ Ext.define('GeoXMap.map.Fullmap', {
 
         const event = 'afterlayout';
 
+        const offsetH = this.headerHeight;
+
         if (leftPanel) {
             leftPanel.on(event, function () {
-                leftPanel.anchorTo(me, 'tl-tl');
+                leftPanel.anchorTo(me, 'tl-tl', [0, offsetH]);
             });
 
             leftPanel.render(mapEl);
@@ -479,7 +504,7 @@ Ext.define('GeoXMap.map.Fullmap', {
             rightPanel.on(event, function () {
                 const slided = me._masterdetail.getSlided();
 
-                const offset = (slided) ? [Math.floor(me._masterdetail.getWidth()), 0] : [0,0];
+                const offset = (slided) ? [Math.floor(me._masterdetail.getWidth()), offsetH] : [0,offsetH];
 
                 rightPanel.removeAnchor().anchorTo(me, 'tr-tr', offset);
             });
@@ -497,7 +522,7 @@ Ext.define('GeoXMap.map.Fullmap', {
 
         if (topPanel) {
             topPanel.on(event, function () {
-                topPanel.anchorTo(me, 'tl-tl');
+                topPanel.anchorTo(me, 'tl-tl', [0,offsetH]);
             });
 
             topPanel.render(mapEl);
@@ -508,17 +533,15 @@ Ext.define('GeoXMap.map.Fullmap', {
 
                 const t = cTools[idx];
 
-                const pos = t.pos;
-
                 t['mapscope'] = me;
+                t['floating'] = true;
+
+                const wrapper = Ext.create(t);
+                wrapper.pos[1] += me.headerHeight;
+
+                const pos = wrapper.pos;
 
                 if (pos && Array.isArray(pos) && pos.length === 2) {
-
-                    // TODO: Wondering if this property isn't dirty
-                    t['floating'] = true;
-
-                    const wrapper = Ext.create(t);
-
                     // TODO: need refactor this event handler
                     me.on('resize', function(){
 
