@@ -108,13 +108,25 @@ Ext.define('GeoXMap.map.Fullmap', {
         // this.store = null
 
         /**
+         * Setup map tools
+         */
+        this.setupMapTools(config.headerTools, config.tools);
+    },
+
+    setupMapTools: function(headerTools, tools){
+        /**
          * Header
          */
-        if(this.title || config.headerTools){
+        if(this.title || headerTools){
 
             this.header = false;
 
-            const header = this.createHeaderPanel(this.title, config.headerTools);
+            const header = this.createHeaderPanel(this.title, headerTools);
+
+            // TODO: remove this dirty patch
+            if(this.down('geo_headerpanel')){
+                this.down('geo_headerpanel').destroy();
+            }
 
             this.insert(0, header);
 
@@ -128,8 +140,6 @@ Ext.define('GeoXMap.map.Fullmap', {
         /**
          * Map Tools
          */
-        const tools = config.tools;
-
         if (tools) {
             // Left panel tools
             const leftPanel = this.createToolsPanel(tools.left, 'vbox', 'start', 'left');
@@ -147,6 +157,7 @@ Ext.define('GeoXMap.map.Fullmap', {
             this._top = topPanel;
         }
     },
+
 
     loadLayers: function (layers, append) {
         if (!layers) {
