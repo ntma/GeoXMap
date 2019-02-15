@@ -55,15 +55,16 @@ Ext.define('GeoXMap.tools.templates.CtxToolTpl', {
                 anchorSide = 'tr-tl';
                 break;
             case 'top':
-                anchorSide = 'tl-bl';
+                anchorSide = 'bl-tl';
                 break;
             default:
-                anchorSide = 'bl-tl';
+                anchorSide = 'tr-br';
                 break;
         }
 
         this._anchorSide = anchorSide;
 
+        this._offset = config.offset;
 
         const me = this;
         const mapscope = this.mapscope;
@@ -88,18 +89,27 @@ Ext.define('GeoXMap.tools.templates.CtxToolTpl', {
             }
         });
 
-        // const masterdetail = this.up('geo_toolpanel').down('geo_masterdetail');
-
-        // if(masterdetail){
-        //     console.log(this.up('geo_toolpanel'));
-        this.up('geo_toolpanel').on('startslide', function(){
-            me.closeWindow();
+        mapscope.on('openmodal', function(id){
+            if(this.getId() !== id){
+                me.closeWindow();
+            }
         });
 
-        this.up('geo_toolpanel').on('endslide', function(){
-            me.alignCtxWindow();
+        ctxw.on('close', function () {
+           me.closeWindow();
         });
-        // }
+
+        const geopanel = this.up('geo_toolpanel');
+
+        if(geopanel){
+            geopanel.on('startslide', function(){
+                me.mapscope.fireEvent('openmodal', -1);
+            });
+
+            geopanel.on('endslide', function(){
+                me.alignCtxWindow();
+            });
+        }
 
         this.on('afterrender', function () {
             ctxw.render(mapscope.getEl());
@@ -125,7 +135,7 @@ Ext.define('GeoXMap.tools.templates.CtxToolTpl', {
         const windowWidth = window.getWidth(),
             windowHeight = window.getHeight();
 
-        const coords = window.getAlignToXY(button, button._anchorSide);
+        const coords = window.getAlignToXY(button, button._anchorSide, (button._offset) ? button._offset : [0,0]);
 
         let readjustX = 0.0,
             readjustY = 0.0;
@@ -148,6 +158,8 @@ Ext.define('GeoXMap.tools.templates.CtxToolTpl', {
         const ctxw = this._contextWindow;
 
         if (ctxw.isHidden()) {
+            this.mapscope.fireEvent('openmodal', this.getId());
+
             ctxw.show();
             ctxw.focus();
 
@@ -156,8 +168,11 @@ Ext.define('GeoXMap.tools.templates.CtxToolTpl', {
 
                 this._firstShow = false;
             }
+
+            ctxw.fireEvent('openctx');
         } else {
             ctxw.hide();
+            ctxw.fireEvent('closectx');
         }
     },
 

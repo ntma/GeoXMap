@@ -40,7 +40,7 @@ Ext.define('GeoXMap.tools.components.SketchFormCtrl', {
     selectInteraction: null,
 
 
-    createLayerInteraction: function (type) {
+    createLayerInteraction: function (type, labelled) {
         const measureSource = this.measureLayer.getSource();
 
         const me = this;
@@ -81,9 +81,13 @@ Ext.define('GeoXMap.tools.components.SketchFormCtrl', {
             /** @type {ol.Coordinate|undefined} */
             let tooltipCoord = evt.coordinate;
 
-            const measureTooltip =  me.createMeasureTooltip();
+            let measureTooltip = null;
 
-            sketch.getGeometry().tooltip = measureTooltip;
+            if(labelled){
+                measureTooltip = me.createMeasureTooltip();
+
+                sketch.getGeometry().tooltip = measureTooltip;
+            }
 
             onChangeInteraction = sketch.getGeometry().on('change', function (event) {
                 const geom = event.target;
@@ -97,8 +101,10 @@ Ext.define('GeoXMap.tools.components.SketchFormCtrl', {
 
                 output = me.formatMeasure(geom);
 
-                measureTooltip.getElement().innerHTML = output;
-                measureTooltip.setPosition(tooltipCoord);
+                if(labelled){
+                    measureTooltip.getElement().innerHTML = output;
+                    measureTooltip.setPosition(tooltipCoord);
+                }
             });
         }, this);
 
@@ -107,8 +113,10 @@ Ext.define('GeoXMap.tools.components.SketchFormCtrl', {
 
                 const measureTooltip = evt.feature.getGeometry().tooltip;
 
-                measureTooltip.getElement().className = 'ol3tooltip ol3tooltip-static';
-                measureTooltip.setOffset([0, -7]);
+                if(measureTooltip){
+                    measureTooltip.getElement().className = 'ol3tooltip ol3tooltip-static';
+                    measureTooltip.setOffset([0, -7]);
+                }
 
                 ol.Observable.unByKey(onChangeInteraction);
             }, this);
@@ -241,7 +249,9 @@ Ext.define('GeoXMap.tools.components.SketchFormCtrl', {
     onToggleDraw: function (btn, toggled) {
         // On active, draw
 
-        const olMap = this.getView().mapscope.getOlMap();
+        const view = this.getView();
+        const olMap = view.mapscope.getOlMap();
+        const labelled = !!view.labelled;
 
         if (toggled) {
             const thickness = this.thickness;
@@ -254,7 +264,7 @@ Ext.define('GeoXMap.tools.components.SketchFormCtrl', {
                 this.createDrawLayer();
             }
 
-            this.createLayerInteraction(geom);
+            this.createLayerInteraction(geom, labelled);
 
             // add interaction
             olMap.addInteraction(this.measureInteraction);
