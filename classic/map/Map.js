@@ -65,10 +65,20 @@ Ext.define('GeoXMap.map.Map', {
         return code;
     },
 
-    extentToFeatures: function(features, maxZoom){
-        const map = this.getMap();
-        const mapView = map.getView();
-        const params = (maxZoom) ? {size: map.getSize(), maxZoom: maxZoom} : {size: map.getSize()};
+    extentToFeatures: function(features, maxZoom, duration){
+        const map = this.getMap(),
+            mapView = map.getView(),
+            params = {
+                'size': map.getSize()
+            };
+
+        if(maxZoom){
+            params['maxZoom'] = maxZoom
+        }
+
+        if(duration){
+            params['duration'] = duration;
+        }
 
         let extent;
 
